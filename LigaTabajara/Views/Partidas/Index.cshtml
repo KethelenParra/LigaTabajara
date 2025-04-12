@@ -1,0 +1,58 @@
+﻿@model IEnumerable<LigaTabajara.Models.Partida>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.TimeMandante.Nome)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TimeVisitante.Nome)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DataPartida)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.GolsMandante)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.GolsVisitante)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.TimeMandante.Nome)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TimeVisitante.Nome)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DataPartida)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.GolsMandante)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.GolsVisitante)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+        </td>
+    </tr>
+}
+
+</table>

@@ -18,6 +18,7 @@ namespace LigaTabajara.Models
         ApplyFormatInEditMode = true)]
         public DateTime DataNascimento { get; set; }
 
-        public ICollection<Time> Time { get; set; } = new List<Time>();
+        public int TimeId { get; set; }
+        public virtual Time Time { get; set; }
     }
 }

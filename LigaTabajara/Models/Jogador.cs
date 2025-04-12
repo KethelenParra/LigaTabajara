@@ -18,7 +18,7 @@ namespace LigaTabajara.Models
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}",
         ApplyFormatInEditMode = true)]
-        public string DataNascimento { get; set; }
+        public DateTime DataNascimento { get; set; }
 		public string Nacionalidade { get; set; }
 		public Posicao Posicao { get; set; }
 
@@ -31,6 +31,7 @@ namespace LigaTabajara.Models
 
         public PePreferido PePreferido { get; set; }
 
-        public ICollection<Time> Time { get; set; } = new List<Time>();
+        public int TimeId { get; set; }
+        public virtual Time Time { get; set; }
     }
 }

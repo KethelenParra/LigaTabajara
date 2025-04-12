@@ -1,0 +1,59 @@
+﻿@model LigaTabajara.Models.Partida
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Partida</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.TimeMandante.Nome)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TimeMandante.Nome)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TimeVisitante.Nome)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TimeVisitante.Nome)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DataPartida)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DataPartida)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.GolsMandante)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.GolsMandante)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.GolsVisitante)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.GolsVisitante)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
