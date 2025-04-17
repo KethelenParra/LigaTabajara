@@ -1,59 +1,42 @@
 ﻿@model LigaTabajara.Models.Partida
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Detalhes da Partida";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>
+<style>
+    /* Cabeçalho em verde claro */
+    .card-success-light .card-header {
+        background-color: #d4edda;
+        color: #155724;
+    }
+</style>
 
-<div>
-    <h4>Partida</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.TimeMandante.Nome)
-        </dt>
+<div class="card card-success-light mb-5" style="max-width: 600px; margin: 2rem auto;">
+    <div class="card-header">
+        <h5 class="mb-0">Detalhes da Partida</h5>
+    </div>
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-4 font-weight-bold">Mandante</dt>
+            <dd class="col-sm-8">@Model.TimeMandante.Nome</dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.TimeMandante.Nome)
-        </dd>
+            <dt class="col-sm-4 font-weight-bold">Visitante</dt>
+            <dd class="col-sm-8">@Model.TimeVisitante.Nome</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.TimeVisitante.Nome)
-        </dt>
+            <dt class="col-sm-4 font-weight-bold">Data</dt>
+            <dd class="col-sm-8">@Model.DataPartida.ToString("dd/MM/yyyy")</dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.TimeVisitante.Nome)
-        </dd>
+            <dt class="col-sm-4 font-weight-bold">Gols Mandante</dt>
+            <dd class="col-sm-8">@Model.GolsMandante</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.DataPartida)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.DataPartida)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.GolsMandante)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.GolsMandante)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.GolsVisitante)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.GolsVisitante)
-        </dd>
-
-    </dl>
+            <dt class="col-sm-4 font-weight-bold">Gols Visitante</dt>
+            <dd class="col-sm-8">@Model.GolsVisitante</dd>
+        </dl>
+    </div>
+    <div class="card-footer d-flex justify-content-between">
+        @Html.ActionLink("← Voltar", "Index", null, new { @class = "btn btn-outline-secondary" })
+        @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-success" })
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>

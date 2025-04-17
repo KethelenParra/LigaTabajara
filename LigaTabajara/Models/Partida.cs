@@ -10,6 +10,10 @@ namespace LigaTabajara.Models
 	public class Partida
 	{
 		public int Id { get; set; }
+
+        [Display(Name = "Rodada")]
+        public int Round { get; set; }
+
         [Display(Name = "Data da Partida")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]

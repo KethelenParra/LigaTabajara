@@ -1,91 +1,58 @@
 ﻿@model LigaTabajara.Models.Jogador
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Detalhes do Jogador";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>
+<style>
+    .card-detail {
+        max-width: 600px;
+        margin: 2rem auto;
+    }
 
-<div>
-    <h4>Jogador</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Time.Nome)
-        </dt>
+    .card-detail .card-header {
+        background-color: #d4edda;
+        color: #155724;
+    }
+</style>
 
-        <dd>
-            @Html.DisplayFor(model => model.Time.Nome)
-        </dd>
+<div class="card card-detail mb-5">
+    <div class="card-header">
+        <h5 class="mb-0">Detalhes do Jogador</h5>
+    </div>
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-4 font-weight-bold">Time</dt>
+            <dd class="col-sm-8">@Model.Time.Nome</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
+            <dt class="col-sm-4 font-weight-bold">Nome</dt>
+            <dd class="col-sm-8">@Model.Name</dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
+            <dt class="col-sm-4 font-weight-bold">Nasc.</dt>
+            <dd class="col-sm-8">@Model.DataNascimento.ToString("dd/MM/yyyy")</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.DataNascimento)
-        </dt>
+            <dt class="col-sm-4 font-weight-bold">Nacionalidade</dt>
+            <dd class="col-sm-8">@Model.Nacionalidade</dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.DataNascimento)
-        </dd>
+            <dt class="col-sm-4 font-weight-bold">Posição</dt>
+            <dd class="col-sm-8">@Model.Posicao</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Nacionalidade)
-        </dt>
+            <dt class="col-sm-4 font-weight-bold">Camisa</dt>
+            <dd class="col-sm-8">@Model.NumCamisa</dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.Nacionalidade)
-        </dd>
+            <dt class="col-sm-4 font-weight-bold">Altura</dt>
+            <dd class="col-sm-8">@Model.Altura</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Posicao)
-        </dt>
+            <dt class="col-sm-4 font-weight-bold">Peso</dt>
+            <dd class="col-sm-8">@Model.Peso</dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.Posicao)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.NumCamisa)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.NumCamisa)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Altura)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Altura)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Peso)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Peso)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PePreferido)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PePreferido)
-        </dd>
-
-    </dl>
+            <dt class="col-sm-4 font-weight-bold">Pé</dt>
+            <dd class="col-sm-8">@Model.PePreferido</dd>
+        </dl>
+    </div>
+    <div class="card-footer d-flex justify-content-between">
+        @Html.ActionLink("← Voltar", "Index", null, new { @class = "btn btn-outline-secondary" })
+        @Html.ActionLink("Editar", "Edit", new { id = Model.ID }, new { @class = "btn btn-success" })
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>

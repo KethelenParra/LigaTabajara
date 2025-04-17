@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using LigaTabajara.DAL;
 using LigaTabajara.Models;
+using LigaTabajara.ViewModels;
 
 namespace LigaTabajara.Controllers
 {
@@ -15,122 +16,82 @@ namespace LigaTabajara.Controllers
     {
         private LigaTabajaraContext db = new LigaTabajaraContext();
 
-        // GET: EstatisticaJogoes
-        public ActionResult Index()
+        // GET: /EstatisticaJogoes
+        public ActionResult Index(int? rodada)
         {
-            var estatisticasJogos = db.EstatisticasJogos.Include(e => e.Jogador).Include(e => e.Partida);
-            return View(estatisticasJogos.ToList());
-        }
+            // 1) pega as partidas com placar definido
+            var partidas = db.Partidas
+                             .Where(p => p.GolsMandante.HasValue && p.GolsVisitante.HasValue);
 
-        // GET: EstatisticaJogoes/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            EstatisticaJogo estatisticaJogo = db.EstatisticasJogos.Find(id);
-            if (estatisticaJogo == null)
-            {
-                return HttpNotFound();
-            }
-            return View(estatisticaJogo);
-        }
+            // 2) filtra por rodada, se houver
+            if (rodada.HasValue)
+                partidas = partidas.Where(p => p.Round == rodada.Value);
 
-        // GET: EstatisticaJogoes/Create
-        public ActionResult Create()
-        {
-            ViewBag.JogadorId = new SelectList(db.Jogadores, "ID", "Name");
-            ViewBag.PartidaId = new SelectList(db.Partidas, "Id", "Id");
-            return View();
-        }
+            // 3) monta o grouping de gols por time
+            var golsPorTimeIds = partidas
+               .SelectMany(p => new[] {
+                   new { TimeId = p.TimeMandanteId, Gols = p.GolsMandante.Value },
+                   new { TimeId = p.TimeVisitanteId, Gols = p.GolsVisitante.Value }
+               })
+               .GroupBy(x => x.TimeId)
+               .Select(g => new {
+                   TimeId = g.Key,
+                   TotalGols = g.Sum(x => x.Gols)
+               });
 
-        // POST: EstatisticaJogoes/Create
-        // Para proteger-se contra ataques de excesso de postagem, ative as propriedades específicas às quais deseja se associar. 
-        // Para obter mais detalhes, confira https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,PartidaId,JogadorId,Gols")] EstatisticaJogo estatisticaJogo)
-        {
-            if (ModelState.IsValid)
+            // 4) faz join com a tabela Times para obter o nome
+            var golsPorTime = (from gt in golsPorTimeIds
+                               join t in db.Times on gt.TimeId equals t.Id
+                               orderby gt.TotalGols descending
+                               select new TimeGolsVM
+                               {
+                                   TimeNome = t.Nome,
+                                   Gols = gt.TotalGols
+                               }).ToList();
+
+            // 5) Artilheiros (já filtrados por rodada ou geral)
+            var artilheiros = db.EstatisticasJogos
+                .Where(e => !rodada.HasValue || e.Partida.Round == rodada.Value)
+                .GroupBy(e => new { e.Jogador.ID, e.Jogador.Name, e.Jogador.Time.Nome })
+                .Select(g => new ArtilheiroVM
+                {
+                    JogadorNome = g.Key.Name,
+                    TimeNome = g.Key.Nome,
+                    Gols = g.Sum(x => x.Gols)
+                })
+                .OrderByDescending(a => a.Gols)
+                .ToList();
+
+            // pega todas as partidas com placar definido
+            var partidasComResultado = db.Partidas
+                .Where(p => p.GolsMandante.HasValue && p.GolsVisitante.HasValue);
+
+            // pega todas as partidas da rodada (disputadas ou não)
+            var partidasDaRodada = rodada.HasValue
+                ? db.Partidas.Where(p => p.Round == rodada.Value)
+                : db.Partidas;
+            // 6) Mensagem para rodada ainda não atualizada
+            if (rodada.HasValue &&
+             db.Partidas.Any(p => p.Round == rodada.Value) &&
+             !partidasComResultado.Any(p => p.Round == rodada.Value))
             {
-                db.EstatisticasJogos.Add(estatisticaJogo);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                ViewBag.Info = $"Rodada {rodada} ainda não atualizada.";
             }
 
-            ViewBag.JogadorId = new SelectList(db.Jogadores, "ID", "Name", estatisticaJogo.JogadorId);
-            ViewBag.PartidaId = new SelectList(db.Partidas, "Id", "Id", estatisticaJogo.PartidaId);
-            return View(estatisticaJogo);
-        }
+            // 7) monta o ViewModel
+            var vm = new EstatisticasIndexVM
+            {
+                Rodada = rodada,
+                TimeGols = golsPorTime,
+                Artilheiros = artilheiros
+            };
 
-        // GET: EstatisticaJogoes/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            EstatisticaJogo estatisticaJogo = db.EstatisticasJogos.Find(id);
-            if (estatisticaJogo == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.JogadorId = new SelectList(db.Jogadores, "ID", "Name", estatisticaJogo.JogadorId);
-            ViewBag.PartidaId = new SelectList(db.Partidas, "Id", "Id", estatisticaJogo.PartidaId);
-            return View(estatisticaJogo);
-        }
-
-        // POST: EstatisticaJogoes/Edit/5
-        // Para proteger-se contra ataques de excesso de postagem, ative as propriedades específicas às quais deseja se associar. 
-        // Para obter mais detalhes, confira https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,PartidaId,JogadorId,Gols")] EstatisticaJogo estatisticaJogo)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(estatisticaJogo).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.JogadorId = new SelectList(db.Jogadores, "ID", "Name", estatisticaJogo.JogadorId);
-            ViewBag.PartidaId = new SelectList(db.Partidas, "Id", "Id", estatisticaJogo.PartidaId);
-            return View(estatisticaJogo);
-        }
-
-        // GET: EstatisticaJogoes/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            EstatisticaJogo estatisticaJogo = db.EstatisticasJogos.Find(id);
-            if (estatisticaJogo == null)
-            {
-                return HttpNotFound();
-            }
-            return View(estatisticaJogo);
-        }
-
-        // POST: EstatisticaJogoes/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            EstatisticaJogo estatisticaJogo = db.EstatisticasJogos.Find(id);
-            db.EstatisticasJogos.Remove(estatisticaJogo);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            return View(vm);
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                db.Dispose();
-            }
+            if (disposing) db.Dispose();
             base.Dispose(disposing);
         }
     }

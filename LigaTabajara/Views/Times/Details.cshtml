@@ -1,91 +1,58 @@
 ﻿@model LigaTabajara.Models.Time
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Detalhes do Time";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>
+<style>
+    .card-detail {
+        max-width: 600px;
+        margin: 2rem auto;
+    }
 
-<div>
-    <h4>Time</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Nome)
-        </dt>
+    .card-detail .card-header {
+        background-color: #d4edda;
+        color: #155724;
+    }
+</style>
 
-        <dd>
-            @Html.DisplayFor(model => model.Nome)
-        </dd>
+<div class="card card-detail mb-5">
+    <div class="card-header">
+        <h5 class="mb-0">Detalhes do Time</h5>
+    </div>
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-4 font-weight-bold">Nome</dt>
+            <dd class="col-sm-8">@Model.Nome</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Cidade)
-        </dt>
+            <dt class="col-sm-4 font-weight-bold">Cidade</dt>
+            <dd class="col-sm-8">@Model.Cidade</dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.Cidade)
-        </dd>
+            <dt class="col-sm-4 font-weight-bold">Estado</dt>
+            <dd class="col-sm-8">@Model.Estado</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
+            <dt class="col-sm-4 font-weight-bold">Fundação</dt>
+            <dd class="col-sm-8">@Model.DataFundacao.ToString("dd/MM/yyyy")</dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.Estado)
-        </dd>
+            <dt class="col-sm-4 font-weight-bold">Estádio</dt>
+            <dd class="col-sm-8">@Model.Estadio</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.DataFundacao)
-        </dt>
+            <dt class="col-sm-4 font-weight-bold">Capacidade</dt>
+            <dd class="col-sm-8">@Model.CapacidadeEstadio</dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.DataFundacao)
-        </dd>
+            <dt class="col-sm-4 font-weight-bold">Cor Primária</dt>
+            <dd class="col-sm-8">@Model.CorUniformePrimario</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Estadio)
-        </dt>
+            <dt class="col-sm-4 font-weight-bold">Cor Secundária</dt>
+            <dd class="col-sm-8">@Model.CorUniformeSecuntario</dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.Estadio)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.CapacidadeEstadio)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.CapacidadeEstadio)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.CorUniformePrimario)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.CorUniformePrimario)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.CorUniformeSecuntario)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.CorUniformeSecuntario)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.StatusTime)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.StatusTime)
-        </dd>
-
-    </dl>
+            <dt class="col-sm-4 font-weight-bold">Status</dt>
+            <dd class="col-sm-8">@Model.StatusTime</dd>
+        </dl>
+    </div>
+    <div class="card-footer d-flex justify-content-between">
+        @Html.ActionLink("← Voltar", "Index", null, new { @class = "btn btn-outline-secondary" })
+        @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-success" })
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>

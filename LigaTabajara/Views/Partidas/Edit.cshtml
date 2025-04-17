@@ -1,73 +1,60 @@
 ﻿@model LigaTabajara.Models.Partida
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Editar Partida";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Edit</h2>
-
-
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>Partida</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.Id)
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.DataPartida, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.DataPartida, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.DataPartida, "", new { @class = "text-danger" })
-            </div>
+<div class="d-flex justify-content-center mt-5">
+    <div class="card shadow-sm w-100" style="max-width:600px;">
+        <div class="card-header bg-success text-white">
+            <h4 class="mb-0">Editar Partida</h4>
         </div>
+        <div class="card-body">
+            @using (Html.BeginForm("Edit", "Partidas", FormMethod.Post, new { @class = "m-3" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.Id)
+                @Html.ValidationSummary(true, "", new { @class = "text-danger mb-3" })
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.TimeMandanteId, "TimeMandanteId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("TimeMandanteId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.TimeMandanteId, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.DataPartida, "Data da Partida", new { @class = "form-label fw-bold" })
+                    @Html.EditorFor(m => m.DataPartida, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+                    @Html.ValidationMessageFor(m => m.DataPartida, "", new { @class = "text-danger" })
+                </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.TimeVisitanteId, "TimeVisitanteId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("TimeVisitanteId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.TimeVisitanteId, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                <div class="mb-3">
+                    @Html.LabelFor(model => model.TimeMandanteId, "Time Mandante", new { @class = "form-label fw-bold" })
+                    @Html.DropDownList("TimeMandanteId", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.TimeMandanteId, "", new { @class = "text-danger" })
+                </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.GolsMandante, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.GolsMandante, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.GolsMandante, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                <div class="mb-3">
+                    @Html.LabelFor(model => model.TimeVisitanteId, "Time Visitante", new { @class = "form-label fw-bold" })
+                    @Html.DropDownList("TimeVisitanteId", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.TimeVisitanteId, "", new { @class = "text-danger" })
+                </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.GolsVisitante, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.GolsVisitante, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.GolsVisitante, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        @Html.LabelFor(m => m.GolsMandante, "Gols Mandante", new { @class = "form-label fw-bold" })
+                        @Html.EditorFor(m => m.GolsMandante, new { htmlAttributes = new { @class = "form-control", type = "number", min = "0" } })
+                        @Html.ValidationMessageFor(m => m.GolsMandante, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-6 mb-3">
+                        @Html.LabelFor(m => m.GolsVisitante, "Gols Visitante", new { @class = "form-label fw-bold" })
+                        @Html.EditorFor(m => m.GolsVisitante, new { htmlAttributes = new { @class = "form-control", type = "number", min = "0" } })
+                        @Html.ValidationMessageFor(m => m.GolsVisitante, "", new { @class = "text-danger" })
+                    </div>
+                </div>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
+                <div class="card-footer bg-light d-flex justify-content-between">
+                    @Html.ActionLink("← Voltar", "Index", null, new { @class = "btn btn-outline-secondary" })
+                    <button type="submit" class="btn btn-success">Salvar Alterações</button>
+                </div>
+            }
         </div>
     </div>
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
 </div>
 
 @section Scripts {

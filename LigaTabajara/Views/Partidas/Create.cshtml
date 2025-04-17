@@ -1,71 +1,58 @@
 ﻿@model LigaTabajara.Models.Partida
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Nova Partida";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Create</h2>
-
-
-@using (Html.BeginForm()) 
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>Partida</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.DataPartida, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.DataPartida, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.DataPartida, "", new { @class = "text-danger" })
-            </div>
+<div class="d-flex justify-content-center mt-5">
+    <div class="card shadow-sm" style="width: 100%; max-width: 600px;">
+        <div class="card-header bg-success text-white">
+            <h4 class="mb-0">Nova Partida</h4>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.TimeMandanteId, "TimeMandanteId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("TimeMandanteId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.TimeMandanteId, "", new { @class = "text-danger" })
-            </div>
-        </div>
+        @using (Html.BeginForm("Create", "Partidas", FormMethod.Post, new { @class = "m-3" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger mb-3" })
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.TimeVisitanteId, "TimeVisitanteId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("TimeVisitanteId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.TimeVisitanteId, "", new { @class = "text-danger" })
+            <div class="mb-3">
+                @Html.LabelFor(m => m.DataPartida, "Data da Partida", new { @class = "form-label fw-bold" })
+                @Html.TextBoxFor(m => m.DataPartida, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                @Html.ValidationMessageFor(m => m.DataPartida, "", new { @class = "text-danger" })
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.GolsMandante, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.GolsMandante, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.GolsMandante, "", new { @class = "text-danger" })
+            <div class="mb-3">
+                @Html.LabelFor(m => m.TimeMandanteId, "Time Mandante", new { @class = "form-label fw-bold" })
+                @Html.DropDownListFor(m => m.TimeMandanteId, (SelectList)ViewBag.TimeMandanteId, "Selecione...", new { @class = "form-select" })
+                @Html.ValidationMessageFor(m => m.TimeMandanteId, "", new { @class = "text-danger" })
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.GolsVisitante, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.GolsVisitante, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.GolsVisitante, "", new { @class = "text-danger" })
+            <div class="mb-3">
+                @Html.LabelFor(m => m.TimeVisitanteId, "Time Visitante", new { @class = "form-label fw-bold" })
+                @Html.DropDownListFor(m => m.TimeVisitanteId, (SelectList)ViewBag.TimeVisitanteId, "Selecione...", new { @class = "form-select" })
+                @Html.ValidationMessageFor(m => m.TimeVisitanteId, "", new { @class = "text-danger" })
             </div>
-        </div>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+            <div class="row">
+                <div class="col-6 mb-3">
+                    @Html.LabelFor(m => m.GolsMandante, "Gols Mandante", new { @class = "form-label fw-bold" })
+                    @Html.TextBoxFor(m => m.GolsMandante, new { @class = "form-control", type = "number", min = "0" })
+                    @Html.ValidationMessageFor(m => m.GolsMandante, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-6 mb-3">
+                    @Html.LabelFor(m => m.GolsVisitante, "Gols Visitante", new { @class = "form-label fw-bold" })
+                    @Html.TextBoxFor(m => m.GolsVisitante, new { @class = "form-control", type = "number", min = "0" })
+                    @Html.ValidationMessageFor(m => m.GolsVisitante, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
+
+            <div class="card-footer bg-light d-flex justify-content-between">
+                @Html.ActionLink("← Voltar", "Index", null, new { @class = "btn btn-outline-secondary" })
+                <button type="submit" class="btn btn-success">Criar Partida</button>
+            </div>
+        }
     </div>
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
 </div>
 
 @section Scripts {

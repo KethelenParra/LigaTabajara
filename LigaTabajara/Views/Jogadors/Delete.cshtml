@@ -1,97 +1,60 @@
-﻿@model LigaTabajara.Models.Jogador
+﻿@* Views/Jogador/Delete.cshtml *@
+@model LigaTabajara.Models.Jogador
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = "Excluir Jogador";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Delete</h2>
-
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Jogador</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Time.Nome)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Time.Nome)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.DataNascimento)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.DataNascimento)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Nacionalidade)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Nacionalidade)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Posicao)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Posicao)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.NumCamisa)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.NumCamisa)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Altura)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Altura)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Peso)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Peso)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PePreferido)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PePreferido)
-        </dd>
-
-    </dl>
-
-    @using (Html.BeginForm()) {
-        @Html.AntiForgeryToken()
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+<div class="d-flex justify-content-center mt-5">
+    <div class="card shadow-sm w-100" style="max-width:600px;">
+        <div class="card-header bg-danger text-white">
+            <h4 class="mb-0">Confirmar Exclusão</h4>
         </div>
-    }
+        <div class="card-body">
+            <dl class="row mb-4">
+                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Time.Nome)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(m => m.Time.Nome)</dd>
+
+                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Name)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(m => m.Name)</dd>
+
+                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.DataNascimento)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(m => m.DataNascimento)</dd>
+
+                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Nacionalidade)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(m => m.Nacionalidade)</dd>
+
+                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Posicao)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(m => m.Posicao)</dd>
+
+                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.NumCamisa)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(m => m.NumCamisa)</dd>
+
+                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Altura)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(m => m.Altura)</dd>
+
+                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Peso)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(m => m.Peso)</dd>
+
+                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.PePreferido)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(m => m.PePreferido)</dd>
+            </dl>
+
+            @using (Html.BeginForm("Delete", "Jogador", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.ID)
+
+                <div class="card-footer bg-light d-flex justify-content-between">
+                    @Html.ActionLink("← Voltar", "Index", null, new { @class = "btn btn-outline-secondary" })
+                    <button type="submit" class="btn btn-danger">Excluir Jogador</button>
+                </div>
+            }
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

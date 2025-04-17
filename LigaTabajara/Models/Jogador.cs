@@ -12,7 +12,8 @@ namespace LigaTabajara.Models
 	public class Jogador
 	{
 		public int ID { get; set; }
-		public string Name { get; set; }
+        [Required]
+        public string Name { get; set; }
 
         [Display(Name = "Data de Nacimento")]
         [DataType(DataType.Date)]
@@ -24,8 +25,13 @@ namespace LigaTabajara.Models
 
         [Display(Name = "Número da Camisa")]
         public int NumCamisa { get; set; }
-		public float Altura { get; set; }
-		public float Peso { get; set; }
+        [Display(Name = "Altura (m)")]
+        [DisplayFormat(DataFormatString = "{0:F2}", ApplyFormatInEditMode = true)]
+        public float Altura { get; set; }
+
+        [Display(Name = "Peso (kg)")]
+        [DisplayFormat(DataFormatString = "{0:F2}", ApplyFormatInEditMode = true)]
+        public float Peso { get; set; }
 
         [Display(Name = "Pé preferido")]
 

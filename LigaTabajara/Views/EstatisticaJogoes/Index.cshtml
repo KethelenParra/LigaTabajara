@@ -1,46 +1,117 @@
-﻿@model IEnumerable<LigaTabajara.Models.EstatisticaJogo>
-
+﻿@model LigaTabajara.ViewModels.EstatisticasIndexVM
 @{
-    ViewBag.Title = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Estatísticas de Gols";
 }
 
-<h2>Index</h2>
+<div class="row mb-4 align-items-center">
+    <!-- título grande -->
+    <div class="col-md-6">
+        <h1 class="display-4">Estatísticas de Gols</h1>
+        <p class="text-muted">Veja o desempenho por rodada ou no geral</p>
+    </div>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Jogador.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Partida.Id)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Gols)
-        </th>
-        <th></th>
-    </tr>
+    <!-- filtro de rodada dentro de um card -->
+    <div class="col-md-6">
+        <div class="card border-secondary shadow-sm">
+            <div class="card-body">
+                @using (Html.BeginForm("Index", "EstatisticaJogoes", FormMethod.Get, new { @class = "form-inline justify-content-end" }))
+                {
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-secondary text-white">
+                                <i class="bi bi-list-ol"></i>  @* ou use uma glyphicon/fontawesome *@
+                            </span>
+                        </div>
+                        @Html.DropDownList("rodada",
+                            new SelectList(
+                              Enumerable.Range(1, 38)
+                                        .Select(r => new { Value = r, Text = "Rodada " + r }),
+                              "Value", "Text", Model.Rodada),
+                            "Todas as Rodadas",
+                            new { @class = "form-control form-control-sm", onchange = "this.form.submit()" })
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Jogador.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Partida.Id)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Gols)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
+
+@if (ViewBag.Info != null)
+{
+    <div class="alert alert-info mt-2">@ViewBag.Info</div>
 }
 
-</table>
+<div class="row">
+    <!-- Tabela de Gols por Time -->
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-primary text-white">
+                Gols Marcados por Time
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-sm mb-0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th style="width: 10%;">Pos</th>
+                            <th style="width: 60%;">Time</th>
+                            <th style="width: 30%;">Gols</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int pos = 1;
+                            foreach (var t in Model.TimeGols)
+                            {
+                                <tr>
+                                    <td>@pos</td>
+                                    <td>@t.TimeNome</td>
+                                    <td>@t.Gols</td>
+                                </tr>
+                                ;
+                                pos++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabela de Artilheiros -->
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-success text-white">
+                Artilheiros @(Model.Rodada.HasValue ? "– Rodada " + Model.Rodada : "– Geral")
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-sm table-striped mb-0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th style="width: 10%;">Pos</th>
+                            <th style="width: 50%;">Jogador</th>
+                            <th style="width: 20%;">Time</th>
+                            <th style="width: 20%;">Gols</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int pos2 = 1;
+                            foreach (var a in Model.Artilheiros)
+                            {
+                                <tr>
+                                    <td>@pos2</td>
+                                    <td>@a.JogadorNome</td>
+                                    <td>@a.TimeNome</td>
+                                    <td>@a.Gols</td>
+                                </tr>
+                                ;
+                                pos2++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

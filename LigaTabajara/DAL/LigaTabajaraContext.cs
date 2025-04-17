@@ -24,14 +24,14 @@ namespace LigaTabajara.DAL
             // Configurar a relação para TimeMandante e desabilitar cascade delete
             modelBuilder.Entity<Partida>()
                 .HasRequired(p => p.TimeMandante)
-                .WithMany() // ou .WithMany(t => t.PartidasMandantes), se você tiver esta coleção no model Time
+                .WithMany(t => t.PartidasMandantes) 
                 .HasForeignKey(p => p.TimeMandanteId)
                 .WillCascadeOnDelete(false);
 
             // Configurar a relação para TimeVisitante e desabilitar cascade delete
             modelBuilder.Entity<Partida>()
                 .HasRequired(p => p.TimeVisitante)
-                .WithMany() // ou .WithMany(t => t.PartidasVisitantes)
+                .WithMany(t => t.PartidasVisitantes) 
                 .HasForeignKey(p => p.TimeVisitanteId)
                 .WillCascadeOnDelete(false);
 

@@ -1,51 +1,44 @@
 ﻿@model LigaTabajara.Models.ComissaoTecnica
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Detalhes da Comissão Técnica";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>
+<style>
+    /* Card genérico para todos os Details */
+    .card-detail {
+        max-width: 600px;
+        margin: 2rem auto;
+    }
 
-<div>
-    <h4>ComissaoTecnica</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Time.Nome)
-        </dt>
+    .card-detail .card-header {
+        background-color: #d4edda; /* verde claro */
+        color: #155724;
+    }
+</style>
 
-        <dd>
-            @Html.DisplayFor(model => model.Time.Nome)
-        </dd>
+<div class="card card-detail mb-5">
+    <div class="card-header">
+        <h5 class="mb-0">Detalhes da Comissão Técnica</h5>
+    </div>
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-4 font-weight-bold">Time</dt>
+            <dd class="col-sm-8">@Model.Time.Nome</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Nome)
-        </dt>
+            <dt class="col-sm-4 font-weight-bold">Nome</dt>
+            <dd class="col-sm-8">@Model.Nome</dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.Nome)
-        </dd>
+            <dt class="col-sm-4 font-weight-bold">Cargo</dt>
+            <dd class="col-sm-8">@Model.Cargo</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Cargo)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Cargo)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.DataNascimento)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.DataNascimento)
-        </dd>
-
-    </dl>
+            <dt class="col-sm-4 font-weight-bold">Data Nasc.</dt>
+            <dd class="col-sm-8">@Model.DataNascimento.ToString("dd/MM/yyyy")</dd>
+        </dl>
+    </div>
+    <div class="card-footer d-flex justify-content-between">
+        @Html.ActionLink("← Voltar", "Index", null, new { @class = "btn btn-outline-secondary" })
+        @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-success" })
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>

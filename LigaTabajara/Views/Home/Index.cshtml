@@ -1,33 +1,72 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@model LigaTabajara.Controllers.HomeIndexViewModel
+@{
+    ViewBag.Title = "Home - Liga Tabajara";
 }
 
-<main>
-    <section class="row" aria-labelledby="aspnetTitle">
-        <h1 id="title">ASP.NET</h1>
-        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-        <p><a href="https://asp.net" class="btn btn-primary btn-md">Learn more &raquo;</a></p>
-    </section>
+<h2>Liga Tabajara de Futebol</h2>
 
-    <div class="row">
-        <section class="col-md-4" aria-labelledby="gettingStartedTitle">
-            <h2 id="gettingStartedTitle">Getting started</h2>
-            <p>
-                ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-                enables a clean separation of concerns and gives you full control over markup
-                for enjoyable, agile development.
-            </p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="librariesTitle">
-            <h2 id="librariesTitle">Get more libraries</h2>
-            <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="hostingTitle">
-            <h2 id="hostingTitle">Web Hosting</h2>
-            <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-        </section>
-    </div>
-</main>
+<section>
+    <h3>Classificação dos Times</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Posição</th>
+                <th>Time</th>
+                <th>Pontos</th>
+                <th>Saldo de Gols</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int pos = 1;
+                foreach (var stat in Model.TeamStats)
+                {
+                    <tr>
+                        <td>@pos</td>
+                        <td>@Html.ActionLink(stat.Time.Nome, "Details", "Times", new { id = stat.Time.Id }, null)</td>
+                        <td>@stat.Points</td>
+                        <td>
+                            @Html.ActionLink(stat.GoalDifference.ToString(), "Index", "EstatisticaJogoes", new { teamId = stat.Time.Id }, null)
+                        </td>
+                        <td>@(stat.IsApto ? "Apto" : "Não Apto")</td>
+                    </tr>
+                    pos++;
+                }
+            }
+        </tbody>
+    </table>
+</section>
+
+<section>
+    <h3>Agenda de Partidas (38 Rodadas)</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Mandante</th>
+                <th>Visitante</th>
+                <th>Placar</th>
+                <th>Detalhes</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var partida in Model.Schedule)
+            {
+                <tr>
+                    <td>@partida.DataPartida.ToString("dd/MM/yyyy")</td>
+                    <td>@partida.TimeMandante.Nome</td>
+                    <td>@partida.TimeVisitante.Nome</td>
+                    <td>
+                        @(partida.GolsMandante.HasValue ? partida.GolsMandante.Value.ToString() : "-")
+                        x
+                        @(partida.GolsVisitante.HasValue ? partida.GolsVisitante.Value.ToString() : "-")
+                    </td>
+                    <td>
+                        @Html.ActionLink("Detalhes", "Details", "Partidas", new { id = partida.Id }, new { @class = "btn btn-info btn-sm" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>
