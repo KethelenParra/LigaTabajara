@@ -11,7 +11,7 @@ using LigaTabajara.Models;
 
 namespace LigaTabajara.Controllers
 {
-    public class JogadorsController : Controller
+    public class JogadoresController : Controller
     {
         private LigaTabajaraContext db = new LigaTabajaraContext();
 

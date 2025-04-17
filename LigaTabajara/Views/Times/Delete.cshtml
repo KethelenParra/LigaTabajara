@@ -41,7 +41,7 @@
                 <dd class="col-sm-8">@Html.DisplayFor(m => m.StatusTime)</dd>
             </dl>
 
-            @using (Html.BeginForm("Delete", "Time", FormMethod.Post))
+            @using (Html.BeginForm("Delete", "Times", FormMethod.Post))
             {
                 @Html.AntiForgeryToken()
                 @Html.HiddenFor(m => m.Id)

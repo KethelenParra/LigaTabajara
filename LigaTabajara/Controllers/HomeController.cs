@@ -1,10 +1,12 @@
 ﻿using LigaTabajara.DAL;
 using LigaTabajara.Models;
+using LigaTabajara.ViewModels;  
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls.WebParts;
+using System.Data.Entity;
 
 namespace LigaTabajara.Controllers
 {
@@ -12,90 +14,87 @@ namespace LigaTabajara.Controllers
     {
         private LigaTabajaraContext db = new LigaTabajaraContext();
 
-        public ActionResult Index()
+        public ActionResult Index(int? round)
         {
-            // Busca todos os times
+            // 1) Lista de todas as rodadas existentes, em ordem
+            var allRounds = db.Partidas
+                              .Select(p => p.Round)
+                              .Distinct()
+                              .OrderBy(r => r)
+                              .ToList();
+
+            // 2) Carrega todas as partidas com mandante/visitante incluídos
+            var partidas = db.Partidas
+                             .Include(p => p.TimeMandante)
+                             .Include(p => p.TimeVisitante)
+                             .OrderBy(p => p.DataPartida)
+                             .ToList();
+
+            // 3) Agenda filtrada pela rodada, se houver
+            var schedule = round.HasValue
+                ? partidas.Where(p => p.Round == round.Value).ToList()
+                : partidas;
+
+            // 4) Apenas partidas já jogadas, para cálculo de estatísticas
+            var completed = partidas
+                .Where(p => p.GolsMandante.HasValue && p.GolsVisitante.HasValue)
+                .ToList();
+
+            // 5) Monta as estatísticas de cada time (agora usando 'completed')
             var teams = db.Times.ToList();
-            var teamStats = new List<TeamStatViewModel>();
-
-            foreach (var t in teams)
+            var teamStats = teams.Select(t =>
             {
-                // Partidas com resultados (jogo concluído)
-                var homeMatches = db.Partidas.Where(p => p.TimeMandanteId == t.Id &&
-                                                         p.GolsMandante.HasValue && p.GolsVisitante.HasValue);
-                var awayMatches = db.Partidas.Where(p => p.TimeVisitanteId == t.Id &&
-                                                         p.GolsMandante.HasValue && p.GolsVisitante.HasValue);
+                var home = completed.Where(p => p.TimeMandanteId == t.Id);
+                var away = completed.Where(p => p.TimeVisitanteId == t.Id);
 
-                int points = 0;
-                int goalsScored = 0;
-                int goalsConceded = 0;
+                int games = home.Count() + away.Count();
+                int wins = home.Count(p => p.GolsMandante > p.GolsVisitante)
+                          + away.Count(p => p.GolsVisitante > p.GolsMandante);
+                int draws = completed.Count(p =>
+                                (p.TimeMandanteId == t.Id || p.TimeVisitanteId == t.Id)
+                                 && p.GolsMandante == p.GolsVisitante);
+                int losses = games - wins - draws;
 
-                foreach (var match in homeMatches)
-                {
-                    int gm = match.GolsMandante.Value;
-                    int gv = match.GolsVisitante.Value;
-                    goalsScored += gm;
-                    goalsConceded += gv;
-                    if (gm > gv)
-                        points += 3;
-                    else if (gm == gv)
-                        points += 1;
-                }
-                foreach (var match in awayMatches)
-                {
-                    int gm = match.GolsVisitante.Value;
-                    int gv = match.GolsMandante.Value;
-                    goalsScored += gm;
-                    goalsConceded += gv;
-                    if (gm > gv)
-                        points += 3;
-                    else if (gm == gv)
-                        points += 1;
-                }
-                int goalDifference = goalsScored - goalsConceded;
+                int goalsFor = home.Sum(p => p.GolsMandante.Value)
+                                    + away.Sum(p => p.GolsVisitante.Value);
+                int goalsAgainst = home.Sum(p => p.GolsVisitante.Value)
+                                    + away.Sum(p => p.GolsMandante.Value);
 
-                // Verifica se o time está apto:
+                int points = wins * 3 + draws;
+                int goalDifference = goalsFor - goalsAgainst;
+
                 bool hasMinPlayers = db.Jogadores.Count(j => j.TimeId == t.Id) >= 30;
                 var comissao = db.ComissoesTecnicas.Where(c => c.TimeId == t.Id).ToList();
-                bool hasMinComissao = comissao.Count >= 5 && comissao.GroupBy(c => c.Cargo).All(g => g.Count() == 1);
+                bool hasMinComissao = comissao.Count >= 5
+                                      && comissao.GroupBy(c => c.Cargo).All(g => g.Count() == 1);
                 bool isApto = hasMinPlayers && hasMinComissao;
 
-                teamStats.Add(new TeamStatViewModel
+                return new TeamStatView
                 {
                     Time = t,
+                    Games = games,
+                    Wins = wins,
+                    Draws = draws,
+                    Losses = losses,
                     Points = points,
                     GoalDifference = goalDifference,
                     IsApto = isApto
-                });
-            }
+                };
+            })
+            .OrderByDescending(vm => vm.Points)
+            .ThenByDescending(vm => vm.GoalDifference)
+            .ToList();
 
-            // Agenda de partidas: buscamos todas as partidas (ordena por data)
-            var schedule = db.Partidas.Include("TimeMandante").Include("TimeVisitante")
-                              .OrderBy(p => p.DataPartida).ToList();
-
-            var model = new HomeIndexViewModel
+            // 6) Prepara o ViewModel
+            var model = new HomeIndexView
             {
-                TeamStats = teamStats.OrderByDescending(s => s.Points)
-                                     .ThenByDescending(s => s.GoalDifference).ToList(),
+                TeamStats = teamStats,
+                Rounds = allRounds,
+                Round = round,
                 Schedule = schedule
             };
+
             return View(model);
         }
-    }
-
-    // ViewModel para estatísticas dos times
-    public class TeamStatViewModel
-    {
-        public Time Time { get; set; }
-        public int Points { get; set; }
-        public int GoalDifference { get; set; }
-        public bool IsApto { get; set; }
-    }
-
-    // ViewModel para a Home com classificação e agenda de partidas
-    public class HomeIndexViewModel
-    {
-        public List<TeamStatViewModel> TeamStats { get; set; }
-        public List<Partida> Schedule { get; set; }
     }
 }

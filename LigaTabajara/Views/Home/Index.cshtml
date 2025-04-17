@@ -1,35 +1,184 @@
-﻿@model LigaTabajara.Controllers.HomeIndexViewModel
+﻿@model LigaTabajara.ViewModels.HomeIndexView
+@using System.Linq
+
 @{
     ViewBag.Title = "Home - Liga Tabajara";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // Coleta todas as rodadas cadastradas
+    var allRounds = Model.Rounds ?? new List<int>();
+    int maxRound = allRounds.Any() ? allRounds.Max() : 0;
+    int minRound = allRounds.Any() ? allRounds.Min() : 1;
+    int current = Model.Round ?? 0; // 0 = Geral
+
+    // Calcula destino/estado dos botões
+    int? prevRound = null;
+    int? nextRound = null;
+
+    if (current > 0)
+    {
+        // Da rodada 1 volta p/ Geral (null), senão decrementar
+        prevRound = (current == minRound) ? (int?)null : current - 1;
+    }
+    if (current < maxRound)
+    {
+        nextRound = current + 1;
+    }
+
+    bool prevDisabled = (current == 0);
+    bool nextDisabled = (current >= maxRound);
 }
 
-<h2>Liga Tabajara de Futebol</h2>
+<!-- ======================
+     ESTILOS CUSTOMIZADOS
+     ====================== -->
+<style>
+    /* classificação */
+    .table-classificacao {
+        border-collapse: separate;
+        border-spacing: 0;
+    }
 
+        .table-classificacao thead {
+            background-color: #006400;
+            color: #fff;
+        }
+
+        .table-classificacao tbody tr:nth-child(odd) {
+            background-color: #f8f9fa;
+        }
+
+        .table-classificacao tbody tr:hover {
+            background-color: #e2e6ea;
+        }
+
+        .table-classificacao a {
+            text-decoration: none;
+            color: #004085;
+            font-weight: 500;
+        }
+
+            .table-classificacao a:hover {
+                text-decoration: underline;
+            }
+
+    /* agenda */
+    .card-agenda {
+        border: none;
+        border-radius: .5rem;
+        box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+    }
+
+        .card-agenda .card-header {
+            background-color: #006400;
+            color: #fff;
+            font-weight: 600;
+            font-size: 1.25rem;
+            padding: .75rem 1.25rem;
+        }
+
+    /* botões de navegação */
+    .agenda-nav .btn-nav {
+        display: inline-block;
+        border: 2px solid #fff;
+        border-radius: 50px;
+        color: #fff !important;
+        background: transparent;
+        padding: .5rem 1.25rem;
+        font-weight: 600;
+        margin: 0 0.25rem;
+        transition: background-color 0.2s;
+        text-decoration: none;
+    }
+
+        .agenda-nav .btn-nav:hover {
+            background-color: rgba(255,255,255,0.15);
+        }
+
+        .agenda-nav .btn-nav.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+    /* tabela de partidas */
+    .table-agenda thead {
+        background-color: #228b22;
+        color: #fff;
+    }
+
+    .table-agenda tbody tr:nth-child(odd) {
+        background-color: #f8f9fa;
+    }
+
+    .table-agenda tbody tr:hover {
+        background-color: #e2e6ea;
+    }
+
+    /* botão “Ver” */
+    .btn-view {
+        background-color: #228b22;
+        border-color: #1a6b1a;
+        color: #fff;
+    }
+
+        .btn-view:hover {
+            background-color: #196619;
+            color: #fff;
+        }
+</style>
+
+<h2 class="mb-4">Liga Tabajara de Futebol</h2>
+
+<!-- ================
+     Classificação
+     ================ -->
 <section>
-    <h3>Classificação dos Times</h3>
-    <table class="table table-bordered">
+    <h3>Classificação</h3>
+    <table class="table table-bordered table-classificacao mb-5">
         <thead>
             <tr>
-                <th>Posição</th>
-                <th>Time</th>
-                <th>Pontos</th>
-                <th>Saldo de Gols</th>
-                <th>Status</th>
+                <th class="text-center" style="width:5%;">#</th>
+                <th style="width:30%;">Time</th>
+                <th class="text-center" style="width:7%;">Jogos</th>
+                <th class="text-center" style="width:7%;">Vitórias</th>
+                <th class="text-center" style="width:7%;">Empates</th>
+                <th class="text-center" style="width:7%;">Derrotas</th>
+                <th class="text-center" style="width:7%;">Pontos</th>
+                <th class="text-center" style="width:10%;">Saldo de Gols</th>
+                <th class="text-center" style="width:10%;">Status</th>
             </tr>
         </thead>
         <tbody>
             @{
-                int pos = 1;
+                var pos = 1;
                 foreach (var stat in Model.TeamStats)
                 {
                     <tr>
-                        <td>@pos</td>
-                        <td>@Html.ActionLink(stat.Time.Nome, "Details", "Times", new { id = stat.Time.Id }, null)</td>
-                        <td>@stat.Points</td>
+                        <td class="text-center">@pos</td>
                         <td>
-                            @Html.ActionLink(stat.GoalDifference.ToString(), "Index", "EstatisticaJogoes", new { teamId = stat.Time.Id }, null)
+                            @Html.ActionLink(
+                                stat.Time.Nome,
+                                "Details", "Times",
+                                new { id = stat.Time.Id },
+                                new { @class = "text-decoration-none" }
+                            )
                         </td>
-                        <td>@(stat.IsApto ? "Apto" : "Não Apto")</td>
+                        <td class="text-center">@stat.Games</td>
+                        <td class="text-center">@stat.Wins</td>
+                        <td class="text-center">@stat.Draws</td>
+                        <td class="text-center">@stat.Losses</td>
+                        <td class="text-center">@stat.Points</td>
+                        <td class="text-center">
+                            @Html.ActionLink(
+                                stat.GoalDifference.ToString(),
+                                "Index", "EstatisticaJogoes",
+                                new { teamId = stat.Time.Id },
+                                new { @class = "text-decoration-none" }
+                            )
+                        </td>
+                        <td class="text-center">
+                            @(stat.IsApto ? "Apto" : "Não Apto")
+                        </td>
                     </tr>
                     pos++;
                 }
@@ -38,57 +187,100 @@
     </table>
 </section>
 
-<section>
-    <h3>Agenda de Partidas (38 Rodadas)</h3>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Data</th>
-                <th>Mandante</th>
-                <th>Visitante</th>
-                <th>Placar</th>
-                <th>Resultado</th>
-                <th>Detalhes</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var partida in Model.Schedule)
-            {
-                <tr>
-                    <td>@partida.DataPartida.ToString("dd/MM/yyyy")</td>
-                    <td>@partida.TimeMandante.Nome</td>
-                    <td>@partida.TimeVisitante.Nome</td>
-                    <td>
-                        @(partida.GolsMandante.HasValue ? partida.GolsMandante.Value.ToString() : "-")
-                        x
-                        @(partida.GolsVisitante.HasValue ? partida.GolsVisitante.Value.ToString() : "-")
-                    </td>
-                    <td>
-                        @if (partida.GolsMandante.HasValue && partida.GolsVisitante.HasValue)
+<!-- ============
+     Agenda
+     ============ -->
+<section id="schedule" class="mt-5">
+    <div class="card card-agenda">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <strong>
+                @(Model.Round.HasValue
+                  ? $"Agenda de Partidas — Rodada {Model.Round}"
+                  : "Agenda de Partidas — Geral")
+            </strong>
+            <div class="agenda-nav">
+                <a class="btn-nav @(prevDisabled ? "disabled" : "")"
+                   href="@( !prevDisabled
+                            ? Url.Action("Index", new { round = prevRound }) + "#schedule"
+                            : "#" )"
+                   aria-disabled="@prevDisabled">
+                    ← Rodada Anterior
+                </a>
+                <a class="btn-nav @(nextDisabled ? "disabled" : "")"
+                   href="@( !nextDisabled
+                            ? Url.Action("Index", new { round = nextRound }) + "#schedule"
+                            : "#" )"
+                   aria-disabled="@nextDisabled">
+                    Próxima Rodada →
+                </a>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-agenda mb-0">
+                    <thead>
+                        <tr>
+                            <th style="width:12%;">Data</th>
+                            <th style="width:20%;">Mandante</th>
+                            <th class="text-center" style="width:15%;">Placar</th>
+                            <th style="width:20%;">Visitante</th>
+                            <th style="width:25%;">Resultado</th>
+                            <th class="text-center" style="width:8%;">Detalhes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var partida in Model.Schedule)
                         {
-                            if (partida.GolsMandante > partida.GolsVisitante)
-                            {
-                                @:Vitória do @partida.TimeMandante.Nome
-                            }
-                            else if (partida.GolsMandante < partida.GolsVisitante)
-                            {
-                                @:Vitória do @partida.TimeVisitante.Nome
-                            }
-                            else
-                            {
-                                @:Empate
-                            }
+                            <tr>
+                                <td>@partida.DataPartida.ToString("dd/MM/yyyy")</td>
+                                <td>@partida.TimeMandante.Nome</td>
+                                <td class="text-center">
+                                    @(partida.GolsMandante.HasValue
+                                        ? partida.GolsMandante.Value.ToString()
+                                        : "-")
+                                    x
+                                    @(partida.GolsVisitante.HasValue
+                                        ? partida.GolsVisitante.Value.ToString()
+                                        : "-")
+                                </td>
+                                <td>@partida.TimeVisitante.Nome</td>
+                                <td>
+                                    @if (partida.GolsMandante.HasValue && partida.GolsVisitante.HasValue)
+                                    {
+                                        if (partida.GolsMandante > partida.GolsVisitante)
+                                        {
+                                            <span class="text-success">
+                                                Vitória do @partida.TimeMandante.Nome
+                                            </span>
+                                        }
+                                        else if (partida.GolsMandante < partida.GolsVisitante)
+                                        {
+                                            <span class="text-success">
+                                                Vitória do @partida.TimeVisitante.Nome
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-warning">Empate</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">–</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    @Html.ActionLink(
+                                        "Ver", "Details", "Partidas",
+                                        new { id = partida.Id },
+                                        new { @class = "btn btn-view btn-sm" }
+                                    )
+                                </td>
+                            </tr>
                         }
-                        else
-                        {
-                            @:-  <!-- ou “Não jogado” -->
-                        }
-                    </td>
-                    <td>
-                        @Html.ActionLink("Detalhes", "Details", "Partidas", new { id = partida.Id }, new { @class = "btn btn-info btn-sm" })
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </section>

@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using LigaTabajara.DAL;
 using LigaTabajara.Models;
+using LigaTabajara.ViewModels;
 
 namespace LigaTabajara.Controllers
 {
@@ -17,15 +18,39 @@ namespace LigaTabajara.Controllers
         private static readonly Random _rng = new Random();
 
         // GET: Partidas
-        public ActionResult Index()
+        public ActionResult Index(int? round)
         {
+            // 1) coleta todas as rodadas distintas
+            var allRounds = db.Partidas
+                              .Select(p => p.Round)
+                              .Distinct()
+                              .OrderBy(r => r)
+                              .ToList();
+
+            // 2) carrega partidas com include e ordenação
             var partidas = db.Partidas
-                               .Include(p => p.TimeMandante)
-                               .Include(p => p.TimeVisitante)
-                               .OrderBy(p => p.Round)
-                               .ThenBy(p => p.DataPartida);
-            return View(partidas.ToList());
+                              .Include(p => p.TimeMandante)
+                              .Include(p => p.TimeVisitante)
+                              .OrderBy(p => p.Round)
+                              .ThenBy(p => p.DataPartida)
+                              .ToList();
+
+            // 3) aplica filtro de rodada se houver
+            var schedule = round.HasValue
+                ? partidas.Where(p => p.Round == round.Value).ToList()
+                : partidas;
+
+            // 4) monta o ViewModel
+            var model = new PartidaIndexView
+            {
+                Schedule = schedule,
+                Rounds = allRounds,
+                Round = round
+            };
+
+            return View(model);
         }
+
 
         // GET: Partidas/Details/5
         public ActionResult Details(int? id)
@@ -166,66 +191,65 @@ namespace LigaTabajara.Controllers
             }
 
             // ** EMBARALHA os times aleatoriamente **
-            times = times
-                .OrderBy(t => _rng.Next())  // usa o Random já definido no controlador
-                .ToList();
+            times = times.OrderBy(t => _rng.Next()).ToList();
 
-            var partidas = new List<Partida>();
-            int n = times.Count;           // 20
-            int rounds = n - 1;            // 19 rodadas na primeira perna
+            int n = times.Count;           // 20 times
+            int rounds = n - 1;            // 19 rodadas na 1ª perna
             int perRound = n / 2;          // 10 jogos por rodada
             var teamIds = times.Select(t => t.Id).ToList();
 
-            // 1ª perna
+            // 2) Calcula a próxima segunda-feira como data base
+            DateTime today = DateTime.Today;
+            int daysUntilMonday = ((int)DayOfWeek.Monday - (int)today.DayOfWeek + 7) % 7;
+            DateTime baseMonday = today.AddDays(daysUntilMonday);
+
+            var partidas = new List<Partida>();
+
+            // 3) Gera 1ª perna
             for (int r = 0; r < rounds; r++)
             {
+                // data de início da semana da rodada r
+                DateTime weekStart = baseMonday.AddDays(r * 7);
+
                 for (int i = 0; i < perRound; i++)
                 {
                     int h = (i % 2 == 0) ? teamIds[i] : teamIds[n - 1 - i];
                     int a = (i % 2 == 0) ? teamIds[n - 1 - i] : teamIds[i];
 
+                    // escolhe dia aleatório dentro da semana [0..6]
+                    int offset = _rng.Next(0, 7);
                     partidas.Add(new Partida
                     {
-                        DataPartida = DateTime.Now.Date.AddDays(r),
+                        Round = r + 1,
                         TimeMandanteId = h,
-                        TimeVisitanteId = a
+                        TimeVisitanteId = a,
+                        DataPartida = weekStart.AddDays(offset)
                     });
                 }
-                // roda a lista exceto o primeiro elemento
+
+                // rota a lista (algoritmo círculo)
                 var last = teamIds.Last();
                 teamIds.RemoveAt(n - 1);
                 teamIds.Insert(1, last);
             }
 
-            // 2ª perna (returno)
+            // 4) Gera 2ª perna (returno), invertendo mandante/visitante
             int firstLegCount = partidas.Count;
             for (int i = 0; i < firstLegCount; i++)
             {
                 var orig = partidas[i];
+                // usa a mesma semana, mas rodada = rounds + (orig.Round)
                 partidas.Add(new Partida
                 {
-                    DataPartida = orig.DataPartida.AddDays(rounds),
+                    Round = orig.Round + rounds,
                     TimeMandanteId = orig.TimeVisitanteId,
-                    TimeVisitanteId = orig.TimeMandanteId
+                    TimeVisitanteId = orig.TimeMandanteId,
+                    // mantém o mesmo deslocamento de dia dentro da semana
+                    DataPartida = orig.DataPartida
                 });
             }
 
-            // (2) Agora percorre toda a lista e atribui Round fixo a cada bloco de 10 jogos
-            int currentRound = 1;
-            int jogoCount = 0;
-            foreach (var p in partidas)
-            {
-                p.Round = currentRound;
-                jogoCount++;
-                if (jogoCount == perRound)
-                {
-                    currentRound++;
-                    jogoCount = 0;
-                }
-            }
-
-            // (3) Salva tudo
-
+            // 5) Salva tudo
             db.Partidas.AddRange(partidas);
             db.SaveChanges();
 

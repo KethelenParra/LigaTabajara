@@ -130,7 +130,7 @@
     <Compile Include="Controllers\ComissaoTecnicasController.cs" />
     <Compile Include="Controllers\EstatisticaJogoesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\JogadorsController.cs" />
+    <Compile Include="Controllers\JogadoresController.cs" />
     <Compile Include="Controllers\PartidasController.cs" />
     <Compile Include="Controllers\TimesController.cs" />
     <Compile Include="DAL\LigaTabajaraContext.cs" />
@@ -177,6 +177,18 @@
     <Compile Include="Migrations\202504170608199_CorrigindoDate.Designer.cs">
       <DependentUpon>202504170608199_CorrigindoDate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202504171631366_CorrigePePreferido.cs" />
+    <Compile Include="Migrations\202504171631366_CorrigePePreferido.Designer.cs">
+      <DependentUpon>202504171631366_CorrigePePreferido.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202504171642164_CorrigePesoEAltura.cs" />
+    <Compile Include="Migrations\202504171642164_CorrigePesoEAltura.Designer.cs">
+      <DependentUpon>202504171642164_CorrigePesoEAltura.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202504171645166_CorrigePesoEAltura2.cs" />
+    <Compile Include="Migrations\202504171645166_CorrigePesoEAltura2.Designer.cs">
+      <DependentUpon>202504171645166_CorrigePesoEAltura2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ComissaoTecnica.cs" />
     <Compile Include="Models\EstatisticaJogo.cs" />
@@ -186,6 +198,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\ArtilheiroVM.cs" />
     <Compile Include="ViewModels\EstatisticasIndexVM.cs" />
+    <Compile Include="ViewModels\HomeIndexView.cs" />
+    <Compile Include="ViewModels\PartidaIndexView.cs" />
+    <Compile Include="ViewModels\TeamStatView.cs" />
     <Compile Include="ViewModels\TimeGolsVM.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -236,14 +251,12 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Jogadors\Create.cshtml" />
-    <Content Include="Views\Jogadors\Delete.cshtml" />
-    <Content Include="Views\Jogadors\Details.cshtml" />
-    <Content Include="Views\Jogadors\Edit.cshtml" />
-    <Content Include="Views\Jogadors\Index.cshtml" />
+    <Content Include="Views\Jogadores\Create.cshtml" />
+    <Content Include="Views\Jogadores\Delete.cshtml" />
+    <Content Include="Views\Jogadores\Details.cshtml" />
+    <Content Include="Views\Jogadores\Edit.cshtml" />
+    <Content Include="Views\Jogadores\Index.cshtml" />
     <Content Include="Views\Times\Create.cshtml" />
     <Content Include="Views\Times\Delete.cshtml" />
     <Content Include="Views\Times\Details.cshtml" />
@@ -321,6 +334,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202504170608199_CorrigindoDate.resx">
       <DependentUpon>202504170608199_CorrigindoDate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202504171631366_CorrigePePreferido.resx">
+      <DependentUpon>202504171631366_CorrigePePreferido.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202504171642164_CorrigePesoEAltura.resx">
+      <DependentUpon>202504171642164_CorrigePesoEAltura.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202504171645166_CorrigePesoEAltura2.resx">
+      <DependentUpon>202504171645166_CorrigePesoEAltura2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

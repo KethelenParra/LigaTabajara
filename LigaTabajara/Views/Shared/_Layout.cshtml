@@ -19,9 +19,9 @@
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
                     <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Jogadores", "Index", "Jogadors", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Jogadores", "Index", "Jogadores", new { area = "" }, new { @class = "nav-link" })</li>
                     <li>@Html.ActionLink("Times", "Index", "Times", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Comissão Tecnica", "Index", "ComissaoTecnicas", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("Comissão Tecnicas", "Index", "ComissaoTecnicas", new { area = "" }, new { @class = "nav-link" })</li>
                     <li>@Html.ActionLink("Estatísticas", "Index", "EstatisticaJogoes", new { area = "" }, new { @class = "nav-link" })</li>
                     <li>@Html.ActionLink("Partidas", "Index", "Partidas", new { area = "" }, new { @class = "nav-link" })</li>
                 </ul>
@@ -38,6 +38,25 @@
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/jqueryval")
     @RenderSection("scripts", required: false)
+
+    <!-- Nosso override: -->
+    <script>
+        // esse código DEVE vir depois do jquery.validate
+        (function ($) {
+            if ($.validator && $.validator.methods) {
+                $.validator.methods.number = function (value, element) {
+                    if (this.optional(element)) {
+                        return true;
+                    }
+                    // troca vírgula por ponto
+                    var val = String(value).replace(",", ".");
+                    // agora só aceita 0.00
+                    return /^-?\d+(\.\d+)?$/.test(val);
+                };
+            }
+        })(jQuery);
+    </script>
 </body>
 </html>

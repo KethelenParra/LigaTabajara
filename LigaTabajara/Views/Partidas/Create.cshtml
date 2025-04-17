@@ -21,17 +21,18 @@
                 @Html.TextBoxFor(m => m.DataPartida, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
                 @Html.ValidationMessageFor(m => m.DataPartida, "", new { @class = "text-danger" })
             </div>
+            <div class="row">
+                <div class="col-6 mb-3">
+                    @Html.LabelFor(m => m.TimeMandanteId, "Time Mandante", new { @class = "form-label fw-bold" })
+                    @Html.DropDownListFor(m => m.TimeMandanteId, (SelectList)ViewBag.TimeMandanteId, "Selecione...", new { @class = "form-select" })
+                    @Html.ValidationMessageFor(m => m.TimeMandanteId, "", new { @class = "text-danger" })
+                </div>
 
-            <div class="mb-3">
-                @Html.LabelFor(m => m.TimeMandanteId, "Time Mandante", new { @class = "form-label fw-bold" })
-                @Html.DropDownListFor(m => m.TimeMandanteId, (SelectList)ViewBag.TimeMandanteId, "Selecione...", new { @class = "form-select" })
-                @Html.ValidationMessageFor(m => m.TimeMandanteId, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="mb-3">
-                @Html.LabelFor(m => m.TimeVisitanteId, "Time Visitante", new { @class = "form-label fw-bold" })
-                @Html.DropDownListFor(m => m.TimeVisitanteId, (SelectList)ViewBag.TimeVisitanteId, "Selecione...", new { @class = "form-select" })
-                @Html.ValidationMessageFor(m => m.TimeVisitanteId, "", new { @class = "text-danger" })
+                <div class="col-6 mb-3">
+                    @Html.LabelFor(m => m.TimeVisitanteId, "Time Visitante", new { @class = "form-label fw-bold" })
+                    @Html.DropDownListFor(m => m.TimeVisitanteId, (SelectList)ViewBag.TimeVisitanteId, "Selecione...", new { @class = "form-select" })
+                    @Html.ValidationMessageFor(m => m.TimeVisitanteId, "", new { @class = "text-danger" })
+                </div>
             </div>
 
             <div class="row">

@@ -8,7 +8,7 @@ using System.Xml.Linq;
 namespace LigaTabajara.Models
 {
 	public enum Posicao { Goleiro, Zagueiro, Volante, Meia, Atacante, LateralDireta, LateralEsquerda }
-	public enum PePreferido { Esquerdo, Direito}
+	public enum PePreferido { Esquerdo, Direito, Ambidestro}
 	public class Jogador
 	{
 		public int ID { get; set; }
@@ -25,12 +25,12 @@ namespace LigaTabajara.Models
 
         [Display(Name = "Número da Camisa")]
         public int NumCamisa { get; set; }
-        [Display(Name = "Altura (m)")]
-        [DisplayFormat(DataFormatString = "{0:F2}", ApplyFormatInEditMode = true)]
-        public float Altura { get; set; }
 
+        [Display(Name = "Altura (m)")]
+        [DisplayFormat(DataFormatString = "{0:0.00}", ApplyFormatInEditMode = true)]
+        public float Altura { get; set; }
+        [DisplayFormat(DataFormatString = "{0:0.00}", ApplyFormatInEditMode = true)]
         [Display(Name = "Peso (kg)")]
-        [DisplayFormat(DataFormatString = "{0:F2}", ApplyFormatInEditMode = true)]
         public float Peso { get; set; }
 
         [Display(Name = "Pé preferido")]

@@ -41,7 +41,7 @@
                 <dd class="col-sm-8">@Html.DisplayFor(m => m.PePreferido)</dd>
             </dl>
 
-            @using (Html.BeginForm("Delete", "Jogador", FormMethod.Post))
+            @using (Html.BeginForm("Delete", "Jogadores", FormMethod.Post))
             {
                 @Html.AntiForgeryToken()
                 @Html.HiddenFor(m => m.ID)

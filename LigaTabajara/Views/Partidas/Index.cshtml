@@ -1,11 +1,54 @@
-﻿@model IEnumerable<LigaTabajara.Models.Partida>
+﻿@model LigaTabajara.ViewModels.PartidaIndexView
+@using System.Linq
+
 @{
-    ViewBag.Title = "Partidas";
+    ViewBag.Title = "Calendário de Partidas";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // parâmetros de paginação (prev/next)
+    var allRounds = Model.Rounds ?? new List<int>();
+    int max = allRounds.Any() ? allRounds.Max() : 0;
+    int min = allRounds.Any() ? allRounds.Min() : 1;
+    int current = Model.Round ?? 0;    // 0 = Geral
+
+    int? prevRound;
+    int? nextRound;
+
+    if (current == 0)
+    {
+        prevRound = null;
+        nextRound = allRounds.Any() ? min : (int?)null;
+    }
+    else
+    {
+        prevRound = (current == min) ? (int?)null : current - 1;
+        nextRound = (current < max) ? current + 1 : (int?)null;
+    }
+
+    bool prevDisabled = (current == 0);
+    bool nextDisabled = (current >= max);
 }
 
+<!--=== Estilos customizados para Partidas ===-->
+<style>
+    /* força cabeçalho verde escuro */
+    .table-partidas thead {
+        background-color: #006400;
+        color: #fff;
+    }
+    /* mantém bordas arredondadas no card */
+    .card-partidas {
+        border-radius: .5rem;
+        overflow: hidden;
+    }
+    /* linha ao passar o mouse */
+    .table-partidas tbody tr:hover {
+        background-color: #f1f8f1;
+    }
+</style>
+
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0">Calendário de Partidas</h2>
+    <h2 class="mb-0"> Partidas</h2>
     <div>
         @Html.ActionLink("Gerar Calendário", "GerarPartidas", "Partidas", null,
             new { @class = "btn btn-primary me-2" })
@@ -13,67 +56,95 @@
         {
             <button type="submit" class="btn btn-warning me-2">Recalcular Estatísticas</button>
         }
-        @Html.ActionLink("Novo Jogo", "Create", "Partidas",
-            null, new { @class = "btn btn-success" })
+        @Html.ActionLink("Novo Jogo", "Create", "Partidas", null,
+            new { @class = "btn btn-success" })
     </div>
 </div>
 
-<div class="card shadow-sm">
+<h4 class="mb-3">
+    @(Model.Round.HasValue
+        ? $"Agenda — Rodada {Model.Round}"
+        : "Agenda — Geral")
+</h4>
+
+<div class="d-flex justify-content-between mb-3">
+    <a class="btn btn-outline-secondary @(prevDisabled ? "disabled" : "")"
+       href="@(prevDisabled ? "#" : Url.Action("Index", "Partidas", new { round = prevRound }))">
+        ← Rodada Anterior
+    </a>
+    <a class="btn btn-outline-secondary @(nextDisabled ? "disabled" : "")"
+       href="@(nextDisabled ? "#" : Url.Action("Index", "Partidas", new { round = nextRound }))">
+        Próxima Rodada →
+    </a>
+</div>
+
+<div class="card card-partidas shadow-sm">
     <div class="card-body p-0">
-        <table class="table table-striped table-hover mb-0">
-            <thead class="thead-dark">
+        <table class="table table-striped table-hover mb-0 table-partidas">
+            <thead>
                 <tr>
-                    <th style="width: 15%;">Mandante</th>
-                    <th style="width: 15%;">Visitante</th>
-                    <th style="width: 10%;">Data</th>
-                    <th style="width: 10%;" class="text-center">Gols M</th>
-                    <th style="width: 10%;" class="text-center">Gols V</th>
-                    <th style="width: 20%;">Resultado</th>
-                    <th style="width: 20%;">Ações</th>
+                    <th style="width:10%;">Mandante</th>
+                    <th style="width:10%;">Visitante</th>
+                    <th style="width:10%;">Data</th>
+                    <th class="text-center" style="width:10%;">Gols M</th>
+                    <th class="text-center" style="width:10%;">Gols V</th>
+                    <th class="text-center" style="width:15%;">Resultado</th>
+                    <th class="text-center" style="width:20%;">Ações</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
+                @foreach (var p in Model.Schedule)
                 {
                     <tr>
-                        <td>@item.TimeMandante.Nome</td>
-                        <td>@item.TimeVisitante.Nome</td>
-                        <td>@item.DataPartida.ToString("dd/MM/yyyy")</td>
+                        <td>@p.TimeMandante.Nome</td>
+                        <td>@p.TimeVisitante.Nome</td>
+                        <td>@p.DataPartida.ToString("dd/MM/yyyy")</td>
                         <td class="text-center">
-                            @(item.GolsMandante.HasValue ? item.GolsMandante.Value.ToString() : "-")
+                            @(p.GolsMandante.HasValue ? p.GolsMandante.Value.ToString() : "-")
                         </td>
                         <td class="text-center">
-                            @(item.GolsVisitante.HasValue ? item.GolsVisitante.Value.ToString() : "-")
+                            @(p.GolsVisitante.HasValue ? p.GolsVisitante.Value.ToString() : "-")
                         </td>
-                        <td>
-                            @if (item.GolsMandante.HasValue && item.GolsVisitante.HasValue)
+                        <td class="text-center">
+                            @if (p.GolsMandante.HasValue && p.GolsVisitante.HasValue)
                             {
-                                if (item.GolsMandante > item.GolsVisitante)
+                                if (p.GolsMandante > p.GolsVisitante)
                                 {
-                                    @:Vitória do @item.TimeMandante.Nome
+                                    <span class="text-success">Vitória do @p.TimeMandante.Nome</span>
                                 }
-                                else if (item.GolsMandante < item.GolsVisitante)
+                                else if (p.GolsVisitante > p.GolsMandante)
                                 {
-                                    @:Vitória do @item.TimeVisitante.Nome
+                                    <span class="text-danger">Vitória do @p.TimeVisitante.Nome</span>
                                 }
                                 else
                                 {
-                                    @:Empate
+                                    <span class="text-warning">Empate</span>
                                 }
                             }
                             else
                             {
-                                @:-  <!-- ou “Não jogado” -->
+                                <span class="text-muted">–</span>
                             }
-
                         </td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
-                                @Html.ActionLink("Registrar Placar", "Edit", new { id = item.Id },
+                                @Html.ActionLink(
+                                    "Registrar Placar",
+                                    "Edit",
+                                    "Partidas",
+                                    new { id = p.Id },
                                     new { @class = "btn btn-outline-secondary" })
-                                @Html.ActionLink("Detalhes", "Details", new { id = item.Id },
+                                @Html.ActionLink(
+                                    "Detalhes",
+                                    "Details",
+                                    "Partidas",
+                                    new { id = p.Id },
                                     new { @class = "btn btn-outline-info" })
-                                @Html.ActionLink("Excluir", "Delete", new { id = item.Id },
+                                @Html.ActionLink(
+                                    "Excluir",
+                                    "Delete",
+                                    "Partidas",
+                                    new { id = p.Id },
                                     new { @class = "btn btn-outline-danger" })
                             </div>
                         </td>
