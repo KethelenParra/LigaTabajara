@@ -39,8 +39,20 @@
                         <td>@item.Nacionalidade</td>
                         <td>@item.Posicao</td>
                         <td>@item.NumCamisa</td>
-                        <td>@item.Altura</td>
-                        <td>@item.Peso</td>
+                        <td>
+                            @(
+                                // força duas casas decimais, separador ponto, e adiciona " m"
+                                item.Altura
+                                    .ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)
+                               + " m"
+                             )
+                        </td>
+                        <td>
+                            @(
+                               // peso com unidade "kg"
+                               item.Peso + " kg"
+                            )
+                        </td>
                         <td>@item.PePreferido</td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
