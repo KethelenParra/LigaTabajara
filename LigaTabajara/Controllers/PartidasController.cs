@@ -87,47 +87,44 @@ namespace LigaTabajara.Controllers
         // Gerar automaticamente as estatísticas de gols de uma partida
         private void RegistrarEstatisticasAutomaticas(Partida partida)
         {
-            // só faz algo se houve gols marcados
-            if (partida.GolsMandante.GetValueOrDefault() > 0)
-            {
-                var possiveisMandantes = db.Jogadores
-                    .Where(j => j.TimeId == partida.TimeMandanteId
-                             && j.Posicao != Posicao.Goleiro)
-                    .ToList();
-
-                if (possiveisMandantes.Any())
-                {
-                    // sorteia um jogador aleatoriamente
-                    var escolhido = possiveisMandantes[_rng.Next(possiveisMandantes.Count)];
-                    db.EstatisticasJogos.Add(new EstatisticaJogo
-                    {
-                        PartidaId = partida.Id,
-                        JogadorId = escolhido.ID,
-                        Gols = partida.GolsMandante.Value
-                    });
-                }
-            }
-
-            if (partida.GolsVisitante.GetValueOrDefault() > 0)
-            {
-                var possiveisVisitantes = db.Jogadores
-                    .Where(j => j.TimeId == partida.TimeVisitanteId
-                             && j.Posicao != Posicao.Goleiro)
-                    .ToList();
-
-                if (possiveisVisitantes.Any())
-                {
-                    var escolhido = possiveisVisitantes[_rng.Next(possiveisVisitantes.Count)];
-                    db.EstatisticasJogos.Add(new EstatisticaJogo
-                    {
-                        PartidaId = partida.Id,
-                        JogadorId = escolhido.ID,
-                        Gols = partida.GolsVisitante.Value
-                    });
-                }
-            }
+            DistribuirGols(partida.Id, partida.TimeMandanteId, partida.GolsMandante.GetValueOrDefault());
+            DistribuirGols(partida.Id, partida.TimeVisitanteId, partida.GolsVisitante.GetValueOrDefault());
+            db.SaveChanges();
             db.SaveChanges();
         }
+
+        private void DistribuirGols(int partidaId, int timeId, int totalGols)
+        {
+            if (totalGols <= 0) return;
+
+            // busca todos os jogadores válidos
+            var possiveis = db.Jogadores
+                .Where(j => j.TimeId == timeId && j.Posicao != Posicao.Goleiro)
+                .ToList();
+            if (!possiveis.Any()) return;
+
+            // sorteia um jogador para cada gol
+            var goalsByPlayer = new Dictionary<int, int>();
+            for (int i = 0; i < totalGols; i++)
+            {
+                var escolhido = possiveis[_rng.Next(possiveis.Count)];
+                if (!goalsByPlayer.ContainsKey(escolhido.ID))
+                    goalsByPlayer[escolhido.ID] = 0;
+                goalsByPlayer[escolhido.ID]++;
+            }
+
+            // insere um registro por jogador com a soma dos gols
+            foreach (var kv in goalsByPlayer)
+            {
+                db.EstatisticasJogos.Add(new EstatisticaJogo
+                {
+                    PartidaId = partidaId,
+                    JogadorId = kv.Key,
+                    Gols = kv.Value
+                });
+            }
+        }
+
 
         [HttpPost]
         public ActionResult RecalcularEstatisticas()
@@ -167,6 +164,11 @@ namespace LigaTabajara.Controllers
                 TempData["Error"] = "É necessário ter exatamente 20 times cadastrados para gerar o calendário.";
                 return RedirectToAction("Index");
             }
+
+            // ** EMBARALHA os times aleatoriamente **
+            times = times
+                .OrderBy(t => _rng.Next())  // usa o Random já definido no controlador
+                .ToList();
 
             var partidas = new List<Partida>();
             int n = times.Count;           // 20

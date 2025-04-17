@@ -23,11 +23,12 @@
         <table class="table table-striped table-hover mb-0">
             <thead class="thead-dark">
                 <tr>
-                    <th style="width: 20%;">Mandante</th>
-                    <th style="width: 20%;">Visitante</th>
-                    <th style="width: 20%;">Data</th>
-                    <th style="width: 10%;">Gols M</th>
-                    <th style="width: 10%;">Gols V</th>
+                    <th style="width: 15%;">Mandante</th>
+                    <th style="width: 15%;">Visitante</th>
+                    <th style="width: 10%;">Data</th>
+                    <th style="width: 10%;" class="text-center">Gols M</th>
+                    <th style="width: 10%;" class="text-center">Gols V</th>
+                    <th style="width: 20%;">Resultado</th>
                     <th style="width: 20%;">Ações</th>
                 </tr>
             </thead>
@@ -38,11 +39,37 @@
                         <td>@item.TimeMandante.Nome</td>
                         <td>@item.TimeVisitante.Nome</td>
                         <td>@item.DataPartida.ToString("dd/MM/yyyy")</td>
-                        <td>@(item.GolsMandante.HasValue ? item.GolsMandante.Value.ToString() : "-")</td>
-                        <td>@(item.GolsVisitante.HasValue ? item.GolsVisitante.Value.ToString() : "-")</td>
+                        <td class="text-center">
+                            @(item.GolsMandante.HasValue ? item.GolsMandante.Value.ToString() : "-")
+                        </td>
+                        <td class="text-center">
+                            @(item.GolsVisitante.HasValue ? item.GolsVisitante.Value.ToString() : "-")
+                        </td>
+                        <td>
+                            @if (item.GolsMandante.HasValue && item.GolsVisitante.HasValue)
+                            {
+                                if (item.GolsMandante > item.GolsVisitante)
+                                {
+                                    @:Vitória do @item.TimeMandante.Nome
+                                }
+                                else if (item.GolsMandante < item.GolsVisitante)
+                                {
+                                    @:Vitória do @item.TimeVisitante.Nome
+                                }
+                                else
+                                {
+                                    @:Empate
+                                }
+                            }
+                            else
+                            {
+                                @:-  <!-- ou “Não jogado” -->
+                            }
+
+                        </td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
-                                @Html.ActionLink("Editar", "Edit", new { id = item.Id },
+                                @Html.ActionLink("Registrar Placar", "Edit", new { id = item.Id },
                                     new { @class = "btn btn-outline-secondary" })
                                 @Html.ActionLink("Detalhes", "Details", new { id = item.Id },
                                     new { @class = "btn btn-outline-info" })

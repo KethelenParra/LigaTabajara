@@ -47,6 +47,7 @@
                 <th>Mandante</th>
                 <th>Visitante</th>
                 <th>Placar</th>
+                <th>Resultado</th>
                 <th>Detalhes</th>
             </tr>
         </thead>
@@ -61,6 +62,27 @@
                         @(partida.GolsMandante.HasValue ? partida.GolsMandante.Value.ToString() : "-")
                         x
                         @(partida.GolsVisitante.HasValue ? partida.GolsVisitante.Value.ToString() : "-")
+                    </td>
+                    <td>
+                        @if (partida.GolsMandante.HasValue && partida.GolsVisitante.HasValue)
+                        {
+                            if (partida.GolsMandante > partida.GolsVisitante)
+                            {
+                                @:Vitória do @partida.TimeMandante.Nome
+                            }
+                            else if (partida.GolsMandante < partida.GolsVisitante)
+                            {
+                                @:Vitória do @partida.TimeVisitante.Nome
+                            }
+                            else
+                            {
+                                @:Empate
+                            }
+                        }
+                        else
+                        {
+                            @:-  <!-- ou “Não jogado” -->
+                        }
                     </td>
                     <td>
                         @Html.ActionLink("Detalhes", "Details", "Partidas", new { id = partida.Id }, new { @class = "btn btn-info btn-sm" })

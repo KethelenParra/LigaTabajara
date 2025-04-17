@@ -34,6 +34,39 @@
             <dt class="col-sm-4 font-weight-bold">Gols Visitante</dt>
             <dd class="col-sm-8">@Model.GolsVisitante</dd>
         </dl>
+
+        <hr class="mt-4 mb-2" />
+
+        @* Nova seção: artilheiros desta partida *@
+        @if (Model.EstatisticasJogos != null && Model.EstatisticasJogos.Any())
+        {
+            <h5 class="font-weight-bold mb-3">Artilheiros da partida</h5>
+
+            <table class="table table-sm mb-0">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Jogador</th>
+                        <th>Gols</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var estat in Model.EstatisticasJogos)
+                    {
+                        <tr>
+                            @* Nome + time do jogador *@
+                            <td>@estat.Jogador.Time.Nome</td>
+                            <td>@estat.Jogador.Name</td>
+                            <td>@estat.Gols</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p class="text-muted">Nenhum gol registrado para esta partida.</p>
+        }
     </div>
     <div class="card-footer d-flex justify-content-between">
         @Html.ActionLink("← Voltar", "Index", null, new { @class = "btn btn-outline-secondary" })

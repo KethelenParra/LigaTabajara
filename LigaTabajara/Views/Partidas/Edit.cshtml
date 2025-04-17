@@ -23,38 +23,40 @@
                     @Html.ValidationMessageFor(m => m.DataPartida, "", new { @class = "text-danger" })
                 </div>
 
-                <div class="mb-3">
-                    @Html.LabelFor(model => model.TimeMandanteId, "Time Mandante", new { @class = "form-label fw-bold" })
-                    @Html.DropDownList("TimeMandanteId", null, htmlAttributes: new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.TimeMandanteId, "", new { @class = "text-danger" })
-                </div>
-
-                <div class="mb-3">
-                    @Html.LabelFor(model => model.TimeVisitanteId, "Time Visitante", new { @class = "form-label fw-bold" })
-                    @Html.DropDownList("TimeVisitanteId", null, htmlAttributes: new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.TimeVisitanteId, "", new { @class = "text-danger" })
-                </div>
-
                 <div class="row">
                     <div class="col-6 mb-3">
-                        @Html.LabelFor(m => m.GolsMandante, "Gols Mandante", new { @class = "form-label fw-bold" })
-                        @Html.EditorFor(m => m.GolsMandante, new { htmlAttributes = new { @class = "form-control", type = "number", min = "0" } })
-                        @Html.ValidationMessageFor(m => m.GolsMandante, "", new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.TimeMandanteId, "Time Mandante", new { @class = "form-label fw-bold" })
+                        @Html.DropDownList("TimeMandanteId", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.TimeMandanteId, "", new { @class = "text-danger" })
                     </div>
+
                     <div class="col-6 mb-3">
-                        @Html.LabelFor(m => m.GolsVisitante, "Gols Visitante", new { @class = "form-label fw-bold" })
-                        @Html.EditorFor(m => m.GolsVisitante, new { htmlAttributes = new { @class = "form-control", type = "number", min = "0" } })
-                        @Html.ValidationMessageFor(m => m.GolsVisitante, "", new { @class = "text-danger" })
+                        @Html.LabelFor(model => model.TimeVisitanteId, "Time Visitante", new { @class = "form-label fw-bold" })
+                        @Html.DropDownList("TimeVisitanteId", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.TimeVisitanteId, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
-                <div class="card-footer bg-light d-flex justify-content-between">
-                    @Html.ActionLink("← Voltar", "Index", null, new { @class = "btn btn-outline-secondary" })
-                    <button type="submit" class="btn btn-success">Salvar Alterações</button>
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            @Html.LabelFor(m => m.GolsMandante, "Gols Mandante", new { @class = "form-label fw-bold" })
+                            @Html.EditorFor(m => m.GolsMandante, new { htmlAttributes = new { @class = "form-control", type = "number", min = "0" } })
+                            @Html.ValidationMessageFor(m => m.GolsMandante, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-6 mb-3">
+                            @Html.LabelFor(m => m.GolsVisitante, "Gols Visitante", new { @class = "form-label fw-bold" })
+                            @Html.EditorFor(m => m.GolsVisitante, new { htmlAttributes = new { @class = "form-control", type = "number", min = "0" } })
+                            @Html.ValidationMessageFor(m => m.GolsVisitante, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-light d-flex justify-content-between">
+                        @Html.ActionLink("← Voltar", "Index", null, new { @class = "btn btn-outline-secondary" })
+                        <button type="submit" class="btn btn-success">Salvar Alterações</button>
+                    </div>
+                    }
                 </div>
-            }
-        </div>
-    </div>
+            </div>
 </div>
 
 @section Scripts {
