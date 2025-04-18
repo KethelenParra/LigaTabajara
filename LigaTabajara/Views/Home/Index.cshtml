@@ -1,5 +1,6 @@
 ﻿@model LigaTabajara.ViewModels.HomeIndexView
 @using System.Linq
+@using LigaTabajara.ViewModels
 
 @{
     ViewBag.Title = "Home - Liga Tabajara";
@@ -14,70 +15,79 @@
     // Calcula destino/estado dos botões
     int? prevRound = null;
     int? nextRound = null;
-
     if (current > 0)
     {
-        // Da rodada 1 volta p/ Geral (null), senão decrementar
+        // Da rodada 1 volta p/ Geral (null), senão decrementar
         prevRound = (current == minRound) ? (int?)null : current - 1;
     }
     if (current < maxRound)
     {
         nextRound = current + 1;
     }
-
     bool prevDisabled = (current == 0);
     bool nextDisabled = (current >= maxRound);
 }
 
-<!-- ======================
-     ESTILOS CUSTOMIZADOS
-     ====================== -->
 <style>
-    /* classificação */
     .table-classificacao {
         border-collapse: separate;
         border-spacing: 0;
     }
 
-        .table-classificacao thead {
-            background-color: #006400;
-            color: #fff;
-        }
+    .table-classificacao thead {
+        background-color: #006400;
+        color: #fff;
+    }
 
-        .table-classificacao tbody tr:nth-child(odd) {
-            background-color: #f8f9fa;
-        }
+    .table-classificacao tbody tr:nth-child(odd) {
+        background-color: #f8f9fa;
+    }
 
-        .table-classificacao tbody tr:hover {
-            background-color: #e2e6ea;
-        }
+    .table-classificacao tbody tr:hover {
+        background-color: #e2e6ea;
+    }
 
-        .table-classificacao a {
-            text-decoration: none;
-            color: #004085;
-            font-weight: 500;
-        }
+    .table-classificacao a {
+        text-decoration: none;
+        color: #004085;
+        font-weight: 500;
+    }
 
-            .table-classificacao a:hover {
-                text-decoration: underline;
-            }
+    .table-classificacao a:hover {
+        text-decoration: underline;
+    }
 
-    /* agenda */
+     
+    .table-classificacao tbody tr.tr-lb > td:first-child {
+        border-left: .2rem solid #0d6efd;
+    }
+
+    .table-classificacao tbody tr.tr-q > td:first-child {
+        border-left: .2rem solid #fd7e14;
+    }
+
+    .table-classificacao tbody tr.tr-s > td:first-child {
+        border-left: .2rem solid #198754;
+    }
+
+    .table-classificacao tbody tr.tr-r > td:first-child {
+        border-left: .2rem solid #dc3545;
+    }
+
     .card-agenda {
         border: none;
         border-radius: .5rem;
         box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
     }
 
-        .card-agenda .card-header {
-            background-color: #006400;
-            color: #fff;
-            font-weight: 600;
-            font-size: 1.25rem;
-            padding: .75rem 1.25rem;
-        }
+    .card-agenda .card-header {
+        background-color: #006400;
+        color: #fff;
+        font-weight: 600;
+        font-size: 1.25rem;
+        padding: .75rem 1.25rem;
+    }
 
-    /* botões de navegação */
     .agenda-nav .btn-nav {
         display: inline-block;
         border: 2px solid #fff;
@@ -86,21 +96,20 @@
         background: transparent;
         padding: .5rem 1.25rem;
         font-weight: 600;
-        margin: 0 0.25rem;
-        transition: background-color 0.2s;
+        margin: 0 .25rem;
+        transition: background-color .2s;
         text-decoration: none;
     }
 
-        .agenda-nav .btn-nav:hover {
-            background-color: rgba(255,255,255,0.15);
-        }
+    .agenda-nav .btn-nav:hover {
+        background-color: rgba(255,255,255,0.15);
+    }
 
-        .agenda-nav .btn-nav.disabled {
-            opacity: 0.5;
-            pointer-events: none;
-        }
+    .agenda-nav .btn-nav.disabled {
+        opacity: .5;
+        pointer-events: none;
+    }
 
-    /* tabela de partidas */
     .table-agenda thead {
         background-color: #228b22;
         color: #fff;
@@ -114,77 +123,286 @@
         background-color: #e2e6ea;
     }
 
-    /* botão “Ver” */
     .btn-view {
         background-color: #228b22;
         border-color: #1a6b1a;
         color: #fff;
     }
 
-        .btn-view:hover {
-            background-color: #196619;
-            color: #fff;
-        }
+    .btn-view:hover {
+        background-color: #196619;
+        color: #fff;
+    }
+
+    .legend-grid {
+        display: flex;
+        justify-content: space-between; 
+        align-items: flex-start;
+        margin-top: 2rem;
+    }
+
+    .legend-col {
+        display: flex;
+        flex-direction: column;
+        flex: 1; 
+        max-width: 50%; 
+    }
+
+    .legend-col h5 {
+        font-size: 1rem;
+        margin-bottom: .5rem;
+    }
+
+    .legend-col .legend-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: .5rem;
+        font-size: .9rem;
+    }
+
+    .legend-color {
+        width: 4px;
+        height: 1.25rem;
+        display: inline-block;
+        margin-right: .5rem;
+    }
+
+    .legend-icon {
+        font-size: 1.2rem;
+        margin-right: .5rem;
+        line-height: 1;
+    }
+
+    .card-resumo {
+      background-color: #228b22;
+    }
 </style>
 
 <h2 class="mb-4">Liga Tabajara de Futebol</h2>
+
+
+@if (Model.CampeonatoConcluido)
+{
+    <!-- Tela de comemoração -->
+    <div class="alert alert-success text-center py-5 mb-5">
+        <h1>🎉 Parabéns, @Model.Campeao.Time.Nome é o campeão! 🏆</h1>
+        <p>Pontuação final: <strong>@Model.Campeao.Points</strong> pontos</p>
+        <img src="~/images/trofeu.png" alt="Troféu" style="max-width:200px; margin-top:1rem;" />
+    </div>
+    
+    // filtra apenas partidas com resultado
+    var concluídas = Model.Schedule
+        .Where(p => p.GolsMandante.HasValue && p.GolsVisitante.HasValue)
+        .ToList();
+
+    var totalPartidas = concluídas.Count;
+    var totalGols = concluídas.Sum(p => p.GolsMandante.Value + p.GolsVisitante.Value);
+    var mediaGols = totalPartidas > 0
+        ? Math.Round((double)totalGols / totalPartidas, 2)
+        : 0;
+
+    var maisVitorias = Model.TeamStats
+        .OrderByDescending(t => t.Wins)
+        .FirstOrDefault();
+
+    var maisEmpates = Model.TeamStats
+        .OrderByDescending(t => t.Draws)
+        .FirstOrDefault();
+
+    var maisDerrotas = Model.TeamStats
+        .OrderByDescending(t => t.Losses)
+        .FirstOrDefault();
+   
+
+    <div class="card mb-5">
+        <div class="card-header text-white card-resumo">
+            Resumo do Campeonato
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <strong>Rodadas disputadas:</strong> @Model.Rounds.Max()
+            </li>
+            <li class="list-group-item">
+                <strong>Partidas disputadas:</strong> @totalPartidas
+            </li>
+            <li class="list-group-item">
+                <strong>Gols marcados:</strong> @totalGols
+            </li>
+            <li class="list-group-item">
+                <strong>Média de gols/partida:</strong> @mediaGols
+            </li>
+            <li class="list-group-item">
+                <strong>Artilheiro:</strong>
+                   @Model.TopScorer.JogadorNome (@Model.TopScorer.TotalGols) gols
+            </li>
+            <li class="list-group-item">
+                <strong>Time com mais vitórias:</strong>
+                   @maisVitorias.Time.Nome (@maisVitorias.Wins) vitórias
+            </li>
+            <li class="list-group-item">
+                <strong>Time com mais empates:</strong>
+                   @maisEmpates.Time.Nome (@maisEmpates.Draws) empates
+            </li>
+            <li class="list-group-item">
+                <strong>Time com mais derrotas:</strong>           
+                   @maisDerrotas.Time.Nome (@maisDerrotas.Losses) derrotas
+            </li>
+        </ul>
+    </div>
+} @* fecha o if *@
 
 <!-- ================
      Classificação
      ================ -->
 <section>
     <h3>Classificação</h3>
-    <table class="table table-bordered table-classificacao mb-5">
+    <table class="table table-bordered table-classificacao mb-3">
         <thead>
             <tr>
                 <th class="text-center" style="width:5%;">#</th>
-                <th style="width:30%;">Time</th>
+                <th style="width:15%;">Time</th>
                 <th class="text-center" style="width:7%;">Jogos</th>
                 <th class="text-center" style="width:7%;">Vitórias</th>
                 <th class="text-center" style="width:7%;">Empates</th>
                 <th class="text-center" style="width:7%;">Derrotas</th>
                 <th class="text-center" style="width:7%;">Pontos</th>
-                <th class="text-center" style="width:10%;">Saldo de Gols</th>
+                <th class="text-center" style="width:10%;">Saldo de Gols</th>A
                 <th class="text-center" style="width:10%;">Status</th>
+                <th class="text-center" style="width:15%;">Últimas 5</th>
             </tr>
         </thead>
         <tbody>
             @{
                 var pos = 1;
-                foreach (var stat in Model.TeamStats)
+                var total = Model.TeamStats.Count;
+            }
+            @foreach (var stat in Model.TeamStats)
+            {
+                // agora estamos em C# puro, não precisa de @{
+                string cssClass;
+                if (pos <= 4)
                 {
-                    <tr>
-                        <td class="text-center">@pos</td>
-                        <td>
-                            @Html.ActionLink(
-                                stat.Time.Nome,
-                                "Details", "Times",
-                                new { id = stat.Time.Id },
-                                new { @class = "text-decoration-none" }
-                            )
-                        </td>
-                        <td class="text-center">@stat.Games</td>
-                        <td class="text-center">@stat.Wins</td>
-                        <td class="text-center">@stat.Draws</td>
-                        <td class="text-center">@stat.Losses</td>
-                        <td class="text-center">@stat.Points</td>
-                        <td class="text-center">
-                            @Html.ActionLink(
-                                stat.GoalDifference.ToString(),
-                                "Index", "EstatisticaJogoes",
-                                new { teamId = stat.Time.Id },
-                                new { @class = "text-decoration-none" }
-                            )
-                        </td>
-                        <td class="text-center">
-                            @(stat.IsApto ? "Apto" : "Não Apto")
-                        </td>
-                    </tr>
-                    pos++;
+                    cssClass = "tr-lb";      // 1–4 azul
                 }
+                else if (pos == 5)
+                {
+                    cssClass = "tr-q";       // 5 laranja
+                }
+                else if (pos <= 12)
+                {
+                    cssClass = "tr-s";       // 6–12 verde
+                }
+                else if (pos >= total - 3)
+                {
+                    cssClass = "tr-r";       // 17–20 vermelho
+                }
+                else
+                {
+                    cssClass = "";           // 13–16 sem faixa
+                }
+
+                <tr class="@cssClass">
+                    <td class="text-center">@pos</td>
+                    <td>
+                        @Html.ActionLink(
+                            stat.Time.Nome,
+                            "Details", "Times",
+                            new { id = stat.Time.Id },
+                            new { @class = "text-decoration-none" }
+                        )
+                    </td>
+                    <td class="text-center">@stat.Games</td>
+                    <td class="text-center">@stat.Wins</td>
+                    <td class="text-center">@stat.Draws</td>
+                    <td class="text-center">@stat.Losses</td>
+                    <td class="text-center">@stat.Points</td>
+                    <td class="text-center">
+                        @Html.ActionLink(
+                            stat.GoalDifference.ToString(),
+                            "Index", "EstatisticaJogoes",
+                            new { teamId = stat.Time.Id },
+                            new { @class = "text-decoration-none" }
+                        )
+                    </td>
+                    <td class="text-center">
+                        @(stat.IsApto ? "Apto" : "Não Apto")
+                    </td>
+                    <td class="text-center">
+                        @{
+                            var last = stat.Last5Results ?? Enumerable.Empty<ResultadoEnum>();
+                            var empty = 5 - last.Count();
+                        }
+                        @foreach (var r in last)
+                        {
+                            if (r == ResultadoEnum.Vitoria)
+                            {
+                                <i class="bi bi-check-circle-fill text-success me-1"></i>
+                            }
+                            else if (r == ResultadoEnum.Empate)
+                            {
+                                <i class="bi bi-dash-circle-fill text-warning me-1"></i>
+                            }
+                            else
+                            {
+                                <i class="bi bi-x-circle-fill text-danger me-1"></i>
+                            }
+                        }
+                        @for (int i = 0; i < empty; i++)
+                        {
+                            <i class="bi bi-circle text-muted me-1"></i>
+                        }
+                    </td>
+                </tr>
+                pos++;
             }
         </tbody>
     </table>
+</section>
+
+<section class="legend-section">
+    <div class="legend-grid">
+        <!-- coluna 1: classificação -->
+        <div class="legend-col">
+            <h5>Qualificação / Rebaixamento</h5>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color:#0d6efd;"></span>
+                Fase de grupos da CONMEBOL Libertadores
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color:#fd7e14;"></span>
+                Qualificatórias da CONMEBOL Libertadores
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color:#198754;"></span>
+                Fase de grupos da CONMEBOL Sudamericana
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color:#dc3545;"></span>
+                Rebaixamento
+            </div>
+        </div>
+
+        <!-- coluna 2: resultados -->
+        <div class="legend-col">
+            <h5>Últimas 5 partidas</h5>
+            <div class="legend-item">
+                <i class="bi bi-check-circle-fill text-success legend-icon"></i>
+                Vitórias
+            </div>
+            <div class="legend-item">
+                <i class="bi bi-dash-circle-fill text-secondary legend-icon"></i>
+                Empates
+            </div>
+            <div class="legend-item">
+                <i class="bi bi-x-circle-fill text-danger legend-icon"></i>
+                Derrotas
+            </div>
+            <div class="legend-item">
+                <i class="bi bi-circle text-muted legend-icon"></i>
+                Não jogou
+            </div>
+        </div>
+    </div>
 </section>
 
 <!-- ============
@@ -255,7 +473,7 @@
                                         }
                                         else if (partida.GolsMandante < partida.GolsVisitante)
                                         {
-                                            <span class="text-success">
+                                            <span class="text-danger">
                                                 Vitória do @partida.TimeVisitante.Nome
                                             </span>
                                         }

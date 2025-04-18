@@ -16,5 +16,7 @@ namespace LigaTabajara.ViewModels
         public int Wins { get; set; }
         public int Draws { get; set; }
         public int Losses { get; set; }
+
+        public List<ResultadoEnum> Last5Results { get; set; } = new List<ResultadoEnum>();
     }
 }

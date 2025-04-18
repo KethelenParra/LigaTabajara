@@ -5,59 +5,113 @@
     ViewBag.Title = "Calendário de Partidas";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
-    // parâmetros de paginação (prev/next)
     var allRounds = Model.Rounds ?? new List<int>();
     int max = allRounds.Any() ? allRounds.Max() : 0;
     int min = allRounds.Any() ? allRounds.Min() : 1;
-    int current = Model.Round ?? 0;    // 0 = Geral
+    int current = Model.Round ?? 0;
 
-    int? prevRound;
-    int? nextRound;
-
-    if (current == 0)
-    {
-        prevRound = null;
-        nextRound = allRounds.Any() ? min : (int?)null;
-    }
-    else
-    {
-        prevRound = (current == min) ? (int?)null : current - 1;
-        nextRound = (current < max) ? current + 1 : (int?)null;
-    }
+    int? prevRound = current == 0
+        ? (int?)null
+        : (current == min ? (int?)null : current - 1);
+    int? nextRound = current < max ? current + 1 : (int?)null;
 
     bool prevDisabled = (current == 0);
     bool nextDisabled = (current >= max);
 }
 
-<!--=== Estilos customizados para Partidas ===-->
 <style>
-    /* força cabeçalho verde escuro */
     .table-partidas thead {
         background-color: #006400;
         color: #fff;
     }
-    /* mantém bordas arredondadas no card */
+
     .card-partidas {
         border-radius: .5rem;
         overflow: hidden;
     }
-    /* linha ao passar o mouse */
+
     .table-partidas tbody tr:hover {
         background-color: #f1f8f1;
+    }
+
+    .filter-bar {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-radius: .5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .filter-bar .form-label {
+        font-weight: 600;
+        font-size: .9rem;
+        margin-bottom: .25rem;
+    }
+
+    .filter-bar .form-control,
+    .filter-bar .form-select {
+        min-width: 220px;
+    }
+
+    .dropdown-menu {
+        background-color: #ffffff !important; 
+        border: 1px solid rgba(0,0,0,.15) !important;
+        box-shadow: 0 .25rem .5rem rgba(0,0,0,.1) !important;
+    }
+
+    .dropdown-menu .dropdown-item {
+        color: #000000 !important; 
+        transition: background-color .2s;
+    }
+
+    .dropdown-menu .dropdown-item:hover,
+    .dropdown-menu .dropdown-item:focus {
+        background-color: #808080 !important;
+        color: #000000 !important;
     }
 </style>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0"> Partidas</h2>
-    <div>
-        @Html.ActionLink("Gerar Calendário", "GerarPartidas", "Partidas", null,
-            new { @class = "btn btn-primary me-2" })
-        @using (Html.BeginForm("RecalcularEstatisticas", "Partidas", FormMethod.Post, new { @class = "d-inline" }))
-        {
-            <button type="submit" class="btn btn-warning me-2">Recalcular Estatísticas</button>
-        }
-        @Html.ActionLink("Novo Jogo", "Create", "Partidas", null,
-            new { @class = "btn btn-success" })
+    <h2 class="mb-0">Partidas</h2>
+
+    <!-- Botão Ações destacado -->
+    <div class="btn-group">
+        <button type="button"
+                class="btn btn-success dropdown-toggle"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+            <i class="bi bi-gear-fill"></i> Ações
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+                <a class="dropdown-item" href="@Url.Action("GerarPartidas","Partidas")">
+                    <i class="bi bi-calendar-plus"></i> Gerar Calendário
+                </a>
+            </li>
+            <li>
+                @using (Html.BeginForm("RecalcularEstatisticas", "Partidas", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="dropdown-item">
+                        <i class="bi bi-arrow-clockwise"></i> Recalcular Estatísticas
+                    </button>
+                }
+            </li>
+            <li>
+                @using (Html.BeginForm("LimparCalendario", "Partidas", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="dropdown-item text-danger">
+                        <i class="bi bi-trash"></i> Limpar Calendário
+                    </button>
+                }
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+                <a class="dropdown-item" href="@Url.Action("Create","Partidas")">
+                    <i class="bi bi-plus-circle"></i> Novo Jogo
+                </a>
+            </li>
+        </ul>
     </div>
 </div>
 
@@ -67,14 +121,42 @@
         : "Agenda — Geral")
 </h4>
 
-<div class="d-flex justify-content-between mb-3">
-    <a class="btn btn-outline-secondary @(prevDisabled ? "disabled" : "")"
-       href="@(prevDisabled ? "#" : Url.Action("Index", "Partidas", new { round = prevRound }))">
-        ← Rodada Anterior
+<!-- barra de filtros -->
+<div class="filter-bar d-flex flex-wrap align-items-end">
+    @using (Html.BeginForm("Index", "Partidas", FormMethod.Get, new { @class = "d-flex flex-wrap align-items-end w-100" }))
+    {
+        <div class="me-4 mb-3">
+            <label class="form-label" for="searchJogo">Jogo</label>
+            <input type="text"
+                   id="searchJogo"
+                   name="searchJogo"
+                   class="form-control"
+                   placeholder="Mandante ou Visitante…"
+                   value="@Model.SearchJogo" />
+        </div>
+        <div class="me-4 mb-3">
+            <label class="form-label" for="estadio">Estádio</label>
+            @Html.DropDownList("estadio",
+                new SelectList(Model.EstadioOptions, "Value", "Text", Model.SelectedEstadio),
+                "Todos",
+                new { @class = "form-select", id = "estadio" })
+        </div>
+        <div class="d-flex mb-3">
+            <button type="submit" class="btn btn-primary me-2">Filtrar</button>
+            <a href="@Url.Action("Index","Partidas")" class="btn btn-outline-secondary">Limpar</a>
+        </div>
+    }
+</div>
+
+<!-- botões de paginação -->
+<div class="d-flex justify-content-between mb-4">
+    <a class="btn btn-outline-success btn-sm @(prevDisabled ? "disabled" : "")"
+       href="@(prevDisabled ? "#" : Url.Action("Index", new { round = prevRound }))">
+        ← Rodada Anterior
     </a>
-    <a class="btn btn-outline-secondary @(nextDisabled ? "disabled" : "")"
-       href="@(nextDisabled ? "#" : Url.Action("Index", "Partidas", new { round = nextRound }))">
-        Próxima Rodada →
+    <a class="btn btn-success btn-sm @(nextDisabled ? "disabled" : "")"
+       href="@(nextDisabled ? "#" : Url.Action("Index", new { round = nextRound }))">
+        Próxima Rodada →
     </a>
 </div>
 
@@ -83,13 +165,14 @@
         <table class="table table-striped table-hover mb-0 table-partidas">
             <thead>
                 <tr>
-                    <th style="width:10%;">Mandante</th>
-                    <th style="width:10%;">Visitante</th>
-                    <th style="width:10%;">Data</th>
-                    <th class="text-center" style="width:10%;">Gols M</th>
-                    <th class="text-center" style="width:10%;">Gols V</th>
-                    <th class="text-center" style="width:15%;">Resultado</th>
-                    <th class="text-center" style="width:20%;">Ações</th>
+                    <th>Mandante</th>
+                    <th>Visitante</th>
+                    <th>Data</th>
+                    <th>Estádio</th>
+                    <th class="text-center">Gols M</th>
+                    <th class="text-center">Gols V</th>
+                    <th class="text-center">Resultado</th>
+                    <th class="text-center">Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -99,22 +182,31 @@
                         <td>@p.TimeMandante.Nome</td>
                         <td>@p.TimeVisitante.Nome</td>
                         <td>@p.DataPartida.ToString("dd/MM/yyyy")</td>
+                        <td>@p.TimeMandante.Estadio</td>
                         <td class="text-center">
-                            @(p.GolsMandante.HasValue ? p.GolsMandante.Value.ToString() : "-")
+                            @(p.GolsMandante.HasValue
+                                ? p.GolsMandante.Value.ToString()
+                                : "-")
                         </td>
                         <td class="text-center">
-                            @(p.GolsVisitante.HasValue ? p.GolsVisitante.Value.ToString() : "-")
+                            @(p.GolsVisitante.HasValue
+                                ? p.GolsVisitante.Value.ToString()
+                                : "-")
                         </td>
                         <td class="text-center">
                             @if (p.GolsMandante.HasValue && p.GolsVisitante.HasValue)
                             {
                                 if (p.GolsMandante > p.GolsVisitante)
                                 {
-                                    <span class="text-success">Vitória do @p.TimeMandante.Nome</span>
+                                    <span class="text-success">
+                                        Vitória do @p.TimeMandante.Nome
+                                    </span>
                                 }
                                 else if (p.GolsVisitante > p.GolsMandante)
                                 {
-                                    <span class="text-danger">Vitória do @p.TimeVisitante.Nome</span>
+                                    <span class="text-danger">
+                                        Vitória do @p.TimeVisitante.Nome
+                                    </span>
                                 }
                                 else
                                 {
@@ -126,24 +218,15 @@
                                 <span class="text-muted">–</span>
                             }
                         </td>
-                        <td>
-                            <div class="btn-group btn-group-sm" role="group">
-                                @Html.ActionLink(
-                                    "Registrar Placar",
-                                    "Edit",
-                                    "Partidas",
+                        <td class="text-center">
+                            <div class="btn-group btn-group-sm">
+                                @Html.ActionLink("Registrar Placar", "Edit", "Partidas",
                                     new { id = p.Id },
                                     new { @class = "btn btn-outline-secondary" })
-                                @Html.ActionLink(
-                                    "Detalhes",
-                                    "Details",
-                                    "Partidas",
+                                @Html.ActionLink("Detalhes", "Details", "Partidas",
                                     new { id = p.Id },
                                     new { @class = "btn btn-outline-info" })
-                                @Html.ActionLink(
-                                    "Excluir",
-                                    "Delete",
-                                    "Partidas",
+                                @Html.ActionLink("Excluir", "Delete", "Partidas",
                                     new { id = p.Id },
                                     new { @class = "btn btn-outline-danger" })
                             </div>

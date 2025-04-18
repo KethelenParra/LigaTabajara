@@ -18,7 +18,11 @@ namespace LigaTabajara.Controllers
         // GET: Times
         public ActionResult Index()
         {
-            return View(db.Times.ToList());
+            var times = db.Times
+                           .Include(t => t.ComissoesTecnicas)
+                           .Include(t => t.Jogadores)
+                           .ToList();
+            return View(times);
         }
 
         // GET: Times/Details/5
@@ -39,6 +43,12 @@ namespace LigaTabajara.Controllers
         // GET: Times/Create
         public ActionResult Create()
         {
+            // se já houver 20 times, bloqueia até a exibição do form
+            if (db.Times.Count() >= 20)
+            {
+                TempData["Error"] = "Já existem 20 times cadastrados; não é possível adicionar mais.";
+                return RedirectToAction("Index");
+            }
             return View();
         }
 
@@ -49,6 +59,18 @@ namespace LigaTabajara.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Nome,Cidade,Estado,DataFundacao,Estadio,CapacidadeEstadio,CorUniformePrimario,CorUniformeSecuntario,StatusTime")] Time time)
         {
+            // valida limite de 20 antes de tudo
+            if (db.Times.Count() >= 20)
+            {
+                ModelState.AddModelError("", "Limite de 20 times atingido; não é possível cadastrar mais.");
+            }
+
+            // valida nome único
+            if (db.Times.Any(t => t.Nome.Equals(time.Nome, StringComparison.OrdinalIgnoreCase)))
+            {
+                ModelState.AddModelError("Nome", "Já existe um time cadastrado com este nome.");
+            }
+
             if (ModelState.IsValid)
             {
                 db.Times.Add(time);
@@ -81,6 +103,11 @@ namespace LigaTabajara.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Nome,Cidade,Estado,DataFundacao,Estadio,CapacidadeEstadio,CorUniformePrimario,CorUniformeSecuntario,StatusTime")] Time time)
         {
+            if (db.Times.Any(t => t.Id != time.Id
+                                && t.Nome.Equals(time.Nome, StringComparison.OrdinalIgnoreCase)))
+            {
+                ModelState.AddModelError("Nome", "Já existe um outro time cadastrado com este nome.");
+            }
             if (ModelState.IsValid)
             {
                 db.Entry(time).State = EntityState.Modified;

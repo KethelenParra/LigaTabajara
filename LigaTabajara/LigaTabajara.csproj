@@ -189,6 +189,18 @@
     <Compile Include="Migrations\202504171645166_CorrigePesoEAltura2.Designer.cs">
       <DependentUpon>202504171645166_CorrigePesoEAltura2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202504172335059_CorrigeTecnicosIguais.cs" />
+    <Compile Include="Migrations\202504172335059_CorrigeTecnicosIguais.Designer.cs">
+      <DependentUpon>202504172335059_CorrigeTecnicosIguais.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202504180004081_CorrigeComissaoTecnica3.cs" />
+    <Compile Include="Migrations\202504180004081_CorrigeComissaoTecnica3.Designer.cs">
+      <DependentUpon>202504180004081_CorrigeComissaoTecnica3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202504180011264_CorrigeComissaoTecnica4.cs" />
+    <Compile Include="Migrations\202504180011264_CorrigeComissaoTecnica4.Designer.cs">
+      <DependentUpon>202504180011264_CorrigeComissaoTecnica4.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ComissaoTecnica.cs" />
     <Compile Include="Models\EstatisticaJogo.cs" />
@@ -197,9 +209,12 @@
     <Compile Include="Models\Time.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\ArtilheiroVM.cs" />
+    <Compile Include="ViewModels\ComissaoTecnicaIndexViewModel.cs" />
     <Compile Include="ViewModels\EstatisticasIndexVM.cs" />
     <Compile Include="ViewModels\HomeIndexView.cs" />
+    <Compile Include="ViewModels\JogadorIndexViewModel.cs" />
     <Compile Include="ViewModels\PartidaIndexView.cs" />
+    <Compile Include="ViewModels\ResultadoEnum.cs" />
     <Compile Include="ViewModels\TeamStatView.cs" />
     <Compile Include="ViewModels\TimeGolsVM.cs" />
   </ItemGroup>
@@ -223,6 +238,7 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="images\trofeu.png" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -343,6 +359,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202504171645166_CorrigePesoEAltura2.resx">
       <DependentUpon>202504171645166_CorrigePesoEAltura2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202504172335059_CorrigeTecnicosIguais.resx">
+      <DependentUpon>202504172335059_CorrigeTecnicosIguais.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202504180004081_CorrigeComissaoTecnica3.resx">
+      <DependentUpon>202504180004081_CorrigeComissaoTecnica3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202504180011264_CorrigeComissaoTecnica4.resx">
+      <DependentUpon>202504180011264_CorrigeComissaoTecnica4.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

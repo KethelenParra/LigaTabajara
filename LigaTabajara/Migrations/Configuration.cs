@@ -647,7 +647,7 @@
                 new Jogador { Name = "Luiz Henrique", Posicao = Posicao.Atacante, DataNascimento = DateTime.Parse("1997-05-27"), Nacionalidade = "Brasileiro", NumCamisa = 20, Altura = 1.77f, Peso = 74f, PePreferido = PePreferido.Esquerdo, TimeId = times["Ceará"] },
                 new Jogador { Name = "Rafael Moura", Posicao = Posicao.Atacante, DataNascimento = DateTime.Parse("1987-08-14"), Nacionalidade = "Brasileiro", NumCamisa = 18, Altura = 1.88f, Peso = 85f, PePreferido = PePreferido.Direito, TimeId = times["Ceará"] },
                 new Jogador { Name = "Diego Alves", Posicao = Posicao.Atacante, DataNascimento = DateTime.Parse("1992-11-25"), Nacionalidade = "Brasileiro", NumCamisa = 21, Altura = 1.82f, Peso = 82f, PePreferido = PePreferido.Esquerdo, TimeId = times["Ceará"] },
-                new Jogador { Name = "Marcelo Costa", Posicao = Posicao.Atacante, DataNascimento = DateTime.Parse("1991-04-08"), Nacionalidade = "Brasileiro", NumCamisa = 22, Altura = 1.85f, Peso = 84f, PePreferido = PePreferido.Direito, TimeId = times["Ceará"] },
+                new Jogador { Name = "Marcelo Rick", Posicao = Posicao.Atacante, DataNascimento = DateTime.Parse("1991-04-08"), Nacionalidade = "Brasileiro", NumCamisa = 22, Altura = 1.85f, Peso = 84f, PePreferido = PePreferido.Direito, TimeId = times["Ceará"] },
                 new Jogador { Name = "Antonio Marcos", Posicao = Posicao.Zagueiro, DataNascimento = DateTime.Parse("1993-10-10"), Nacionalidade = "Brasileiro", NumCamisa = 23, Altura = 1.80f, Peso = 76f, PePreferido = PePreferido.Esquerdo, TimeId = times["Ceará"] },
                 new Jogador { Name = "Thiago Rodrigues", Posicao = Posicao.LateralDireta, DataNascimento = DateTime.Parse("1994-12-05"), Nacionalidade = "Brasileiro", NumCamisa = 24, Altura = 1.88f, Peso = 79f, PePreferido = PePreferido.Direito, TimeId = times["Ceará"] },
                 new Jogador { Name = "Vinicius Oliveira", Posicao = Posicao.LateralEsquerda, DataNascimento = DateTime.Parse("1995-03-23"), Nacionalidade = "Brasileiro", NumCamisa = 25, Altura = 1.75f, Peso = 72f, PePreferido = PePreferido.Esquerdo, TimeId = times["Ceará"] },
@@ -792,24 +792,24 @@
                 new ComissaoTecnica { Nome = "Eudes Pedro", Cargo = Cargo.Auxiliar, DataNascimento = DateTime.Parse("1970-01-15"), TimeId = times["Atlético Mineiro"] },
                 new ComissaoTecnica { Nome = "Wesley Oliveira", Cargo = Cargo.PreparadorFisico, DataNascimento = DateTime.Parse("1975-02-20"), TimeId = times["Atlético Mineiro"] },
                 new ComissaoTecnica { Nome = "Rogério Contreira", Cargo = Cargo.TreinadorGoleiro, DataNascimento = DateTime.Parse("1978-11-10"), TimeId = times["Atlético Mineiro"] },
-                new ComissaoTecnica { Nome = "Marina Santos", Cargo = Cargo.Fisiologista, DataNascimento = DateTime.Parse("1982-08-05"), TimeId = times["Atlético Mineiro"] },
+                new ComissaoTecnica { Nome = "Marina Ribacero", Cargo = Cargo.Fisiologista, DataNascimento = DateTime.Parse("1982-08-05"), TimeId = times["Atlético Mineiro"] },
                 new ComissaoTecnica { Nome = "Ricardo Silva", Cargo = Cargo.Fisioterapeuta, DataNascimento = DateTime.Parse("1980-03-22"), TimeId = times["Atlético Mineiro"] },
 
                 // Fluminense
-                new ComissaoTecnica { Nome = "Abel Ferreira", Cargo = Cargo.Treinador, DataNascimento = DateTime.Parse("1974-02-22"), TimeId = times["Fluminense"] },
-                new ComissaoTecnica { Nome = "Flávio Luiz", Cargo = Cargo.Auxiliar, DataNascimento = DateTime.Parse("1970-05-10"), TimeId = times["Fluminense"] },
-                new ComissaoTecnica { Nome = "Ricardo Mical", Cargo = Cargo.PreparadorFisico, DataNascimento = DateTime.Parse("1980-08-15"), TimeId = times["Fluminense"] },
-                new ComissaoTecnica { Nome = "Sérgio Valentim", Cargo = Cargo.TreinadorGoleiro, DataNascimento = DateTime.Parse("1975-03-05"), TimeId = times["Fluminense"] },
-                new ComissaoTecnica { Nome = "Carolina Lima", Cargo = Cargo.Fisiologista, DataNascimento = DateTime.Parse("1985-11-30"), TimeId = times["Fluminense"] },
-                new ComissaoTecnica { Nome = "João Oliveira", Cargo = Cargo.Fisioterapeuta, DataNascimento = DateTime.Parse("1982-07-12"), TimeId = times["Fluminense"] },
+                new ComissaoTecnica { Nome = "Fernando Diniz", Cargo = Cargo.Treinador, DataNascimento = DateTime.Parse("1976-05-30"), TimeId = times["Fluminense"] },
+                new ComissaoTecnica { Nome = "Marcelo Oliveira", Cargo = Cargo.Auxiliar, DataNascimento = DateTime.Parse("1972-11-10"), TimeId = times["Fluminense"] },
+                new ComissaoTecnica { Nome = "Rafael Andrade", Cargo = Cargo.PreparadorFisico, DataNascimento = DateTime.Parse("1981-08-15"), TimeId = times["Fluminense"] },
+                new ComissaoTecnica { Nome = "Paulo Souza", Cargo = Cargo.TreinadorGoleiro, DataNascimento = DateTime.Parse("1979-03-22"), TimeId = times["Fluminense"] },
+                new ComissaoTecnica { Nome = "Isabela Costa", Cargo = Cargo.Fisiologista, DataNascimento = DateTime.Parse("1983-07-12"), TimeId = times["Fluminense"] },
+                new ComissaoTecnica { Nome = "Carla Mendes", Cargo = Cargo.Fisioterapeuta, DataNascimento = DateTime.Parse("1980-09-05"), TimeId = times["Fluminense"] },
 
-                // Corinthians
-                new ComissaoTecnica { Nome = "Abel Ferreira", Cargo = Cargo.Treinador, DataNascimento = DateTime.Parse("1974-02-22"), TimeId = times["Corinthians"] },
-                new ComissaoTecnica { Nome = "Flávio Luiz", Cargo = Cargo.Auxiliar, DataNascimento = DateTime.Parse("1970-05-10"), TimeId = times["Corinthians"] },
-                new ComissaoTecnica { Nome = "Ricardo Mical", Cargo = Cargo.PreparadorFisico, DataNascimento = DateTime.Parse("1980-08-15"), TimeId = times["Corinthians"] },
-                new ComissaoTecnica { Nome = "Sérgio Valentim", Cargo = Cargo.TreinadorGoleiro, DataNascimento = DateTime.Parse("1975-03-05"), TimeId = times["Corinthians"] },
-                new ComissaoTecnica { Nome = "Carolina Lima", Cargo = Cargo.Fisiologista, DataNascimento = DateTime.Parse("1985-11-30"), TimeId = times["Corinthians"] },
-                new ComissaoTecnica { Nome = "João Oliveira", Cargo = Cargo.Fisioterapeuta, DataNascimento = DateTime.Parse("1982-07-12"), TimeId = times["Corinthians"] },
+               // Corinthians
+                new ComissaoTecnica { Nome = "Vagner Mancini", Cargo = Cargo.Treinador, DataNascimento = DateTime.Parse("1966-09-14"), TimeId = times["Corinthians"] },
+                new ComissaoTecnica { Nome = "Diego Silva", Cargo = Cargo.Auxiliar, DataNascimento = DateTime.Parse("1975-02-28"), TimeId = times["Corinthians"] },
+                new ComissaoTecnica { Nome = "Leandro Castro", Cargo = Cargo.PreparadorFisico, DataNascimento = DateTime.Parse("1978-06-01"), TimeId = times["Corinthians"] },
+                new ComissaoTecnica { Nome = "Gustavo Ramos", Cargo = Cargo.TreinadorGoleiro, DataNascimento = DateTime.Parse("1982-12-10"), TimeId = times["Corinthians"] },
+                new ComissaoTecnica { Nome = "Mariana Teixeira", Cargo = Cargo.Fisiologista, DataNascimento = DateTime.Parse("1985-11-30"), TimeId = times["Corinthians"] },
+                new ComissaoTecnica { Nome = "Renata Santos", Cargo = Cargo.Fisioterapeuta, DataNascimento = DateTime.Parse("1981-04-20"), TimeId = times["Corinthians"] },
 
                 // São Paulo
                 new ComissaoTecnica { Nome = "Dorival Júnior", Cargo = Cargo.Treinador, DataNascimento = DateTime.Parse("1962-10-26"), TimeId = times["São Paulo"] },
@@ -836,7 +836,7 @@
                 new ComissaoTecnica { Nome = "Juliana Castro", Cargo = Cargo.Fisioterapeuta, DataNascimento = DateTime.Parse("1982-02-28"), TimeId = times["Internacional"] },
 
                 // Cruzeiro
-                new ComissaoTecnica { Nome = "Dorival Júnior", Cargo = Cargo.Treinador, DataNascimento = DateTime.Parse("1957-02-25"), TimeId = times["Cruzeiro"] },
+                new ComissaoTecnica { Nome = "Dorival Belaparte", Cargo = Cargo.Treinador, DataNascimento = DateTime.Parse("1957-02-25"), TimeId = times["Cruzeiro"] },
                 new ComissaoTecnica { Nome = "Fábio Braz", Cargo = Cargo.Auxiliar, DataNascimento = DateTime.Parse("1974-07-14"), TimeId = times["Cruzeiro"] },
                 new ComissaoTecnica { Nome = "Eduardo Ferreira", Cargo = Cargo.PreparadorFisico, DataNascimento = DateTime.Parse("1980-11-02"), TimeId = times["Cruzeiro"] },
                 new ComissaoTecnica { Nome = "Rafael Freitas", Cargo = Cargo.TreinadorGoleiro, DataNascimento = DateTime.Parse("1978-05-30"), TimeId = times["Cruzeiro"] },
@@ -845,7 +845,7 @@
 
                 // Grêmio
                 new ComissaoTecnica { Nome = "Renato Portaluppi", Cargo = Cargo.Treinador, DataNascimento = DateTime.Parse("1962-02-13"), TimeId = times["Grêmio"] },
-                new ComissaoTecnica { Nome = "Paulo Turra", Cargo = Cargo.Auxiliar, DataNascimento = DateTime.Parse("1973-01-19"), TimeId = times["Grêmio"] },
+                new ComissaoTecnica { Nome = "Paulo Turqueza", Cargo = Cargo.Auxiliar, DataNascimento = DateTime.Parse("1973-01-19"), TimeId = times["Grêmio"] },
                 new ComissaoTecnica { Nome = "Cláudio Mix", Cargo = Cargo.PreparadorFisico, DataNascimento = DateTime.Parse("1970-09-15"), TimeId = times["Grêmio"] },
                 new ComissaoTecnica { Nome = "Anderson Martins", Cargo = Cargo.TreinadorGoleiro, DataNascimento = DateTime.Parse("1975-11-11"), TimeId = times["Grêmio"] },
                 new ComissaoTecnica { Nome = "Juliana Rocha", Cargo = Cargo.Fisiologista, DataNascimento = DateTime.Parse("1988-07-22"), TimeId = times["Grêmio"] },
@@ -856,7 +856,7 @@
                 new ComissaoTecnica { Nome = "Ricardo Abraham", Cargo = Cargo.Auxiliar, DataNascimento = DateTime.Parse("1978-04-10"), TimeId = times["Santos"] },
                 new ComissaoTecnica { Nome = "Bruno Barra", Cargo = Cargo.PreparadorFisico, DataNascimento = DateTime.Parse("1982-09-05"), TimeId = times["Santos"] },
                 new ComissaoTecnica { Nome = "Rafael Freire", Cargo = Cargo.TreinadorGoleiro, DataNascimento = DateTime.Parse("1979-02-20"), TimeId = times["Santos"] },
-                new ComissaoTecnica { Nome = "Marina Santos", Cargo = Cargo.Fisiologista, DataNascimento = DateTime.Parse("1986-07-15"), TimeId = times["Santos"] },
+                new ComissaoTecnica { Nome = "Jerundia Santos", Cargo = Cargo.Fisiologista, DataNascimento = DateTime.Parse("1986-07-15"), TimeId = times["Santos"] },
                 new ComissaoTecnica { Nome = "Pedro Carvalho", Cargo = Cargo.Fisioterapeuta, DataNascimento = DateTime.Parse("1983-11-03"), TimeId = times["Santos"] },
 
                 // Athletico-PR
@@ -870,10 +870,10 @@
                 // Fortaleza
                 new ComissaoTecnica { Nome = "Leandro Zago", Cargo = Cargo.Treinador, DataNascimento = DateTime.Parse("1981-03-30"), TimeId = times["Fortaleza"] },
                 new ComissaoTecnica { Nome = "Diogo Ygor", Cargo = Cargo.Auxiliar, DataNascimento = DateTime.Parse("1978-07-15"), TimeId = times["Fortaleza"] },
-                new ComissaoTecnica { Nome = "Marcelo Costa", Cargo = Cargo.PreparadorFisico, DataNascimento = DateTime.Parse("1975-05-12"), TimeId = times["Fortaleza"] },
+                new ComissaoTecnica { Nome = "Jose Costa", Cargo = Cargo.PreparadorFisico, DataNascimento = DateTime.Parse("1975-05-12"), TimeId = times["Fortaleza"] },
                 new ComissaoTecnica { Nome = "Fábio Moura", Cargo = Cargo.TreinadorGoleiro, DataNascimento = DateTime.Parse("1980-12-01"), TimeId = times["Fortaleza"] },
                 new ComissaoTecnica { Nome = "Gabriela Lima", Cargo = Cargo.Fisiologista, DataNascimento = DateTime.Parse("1984-10-25"), TimeId = times["Fortaleza"] },
-                new ComissaoTecnica { Nome = "Rafael Santos", Cargo = Cargo.Fisioterapeuta, DataNascimento = DateTime.Parse("1979-06-08"), TimeId = times["Fortaleza"] },
+                new ComissaoTecnica { Nome = "Rafael Borges", Cargo = Cargo.Fisioterapeuta, DataNascimento = DateTime.Parse("1979-06-08"), TimeId = times["Fortaleza"] },
 
                 // Bahia
                 new ComissaoTecnica { Nome = "Enderson Moreira", Cargo = Cargo.Treinador, DataNascimento = DateTime.Parse("1966-04-17"), TimeId = times["Bahia"] },
@@ -884,7 +884,7 @@
                 new ComissaoTecnica { Nome = "Juliana Souza", Cargo = Cargo.Fisioterapeuta, DataNascimento = DateTime.Parse("1983-08-24"), TimeId = times["Bahia"] },
 
                  // Coritiba
-                 new ComissaoTecnica { Nome = "Gustavo Morínigo", Cargo = Cargo.Treinador, DataNascimento = DateTime.Parse("1979-09-07"), TimeId = times["Coritiba"] },
+                 new ComissaoTecnica { Nome = "Gustavo Bonaparte", Cargo = Cargo.Treinador, DataNascimento = DateTime.Parse("1979-09-07"), TimeId = times["Coritiba"] },
                 new ComissaoTecnica { Nome = "João Paulo", Cargo = Cargo.Auxiliar, DataNascimento = DateTime.Parse("1981-11-12"), TimeId = times["Coritiba"] },
                 new ComissaoTecnica { Nome = "Marcos Souza", Cargo = Cargo.PreparadorFisico, DataNascimento = DateTime.Parse("1978-04-22"), TimeId = times["Coritiba"] },
                 new ComissaoTecnica { Nome = "Felipe Gomes", Cargo = Cargo.TreinadorGoleiro, DataNascimento = DateTime.Parse("1983-02-15"), TimeId = times["Coritiba"] },
@@ -894,18 +894,18 @@
                 // Goiás
                 new ComissaoTecnica { Nome = "Gustavo Morínigo", Cargo = Cargo.Treinador, DataNascimento = DateTime.Parse("1977-08-20"), TimeId = times["Goiás"] },
                 new ComissaoTecnica { Nome = "Carlos Eduardo", Cargo = Cargo.Auxiliar, DataNascimento = DateTime.Parse("1980-04-15"), TimeId = times["Goiás"] },
-                new ComissaoTecnica { Nome = "Rafael Santos", Cargo = Cargo.PreparadorFisico, DataNascimento = DateTime.Parse("1975-12-10"), TimeId = times["Goiás"] },
+                new ComissaoTecnica { Nome = "Gustas Santos", Cargo = Cargo.PreparadorFisico, DataNascimento = DateTime.Parse("1975-12-10"), TimeId = times["Goiás"] },
                 new ComissaoTecnica { Nome = "Maurício Gomes", Cargo = Cargo.TreinadorGoleiro, DataNascimento = DateTime.Parse("1982-03-05"), TimeId = times["Goiás"] },
                 new ComissaoTecnica { Nome = "Beatriz Oliveira", Cargo = Cargo.Fisiologista, DataNascimento = DateTime.Parse("1985-11-30"), TimeId = times["Goiás"] },
                 new ComissaoTecnica { Nome = "Lucas Ferreira", Cargo = Cargo.Fisioterapeuta, DataNascimento = DateTime.Parse("1988-07-12"), TimeId = times["Goiás"] },
 
                 // Ceará
-                new ComissaoTecnica { Nome = "Dorival Júnior", Cargo = Cargo.Treinador, DataNascimento = DateTime.Parse("1962-04-25"), TimeId = times["Ceará"] },
+                new ComissaoTecnica { Nome = "Júnior Camargo", Cargo = Cargo.Treinador, DataNascimento = DateTime.Parse("1962-04-25"), TimeId = times["Ceará"] },
                 new ComissaoTecnica { Nome = "Marcos Valadares", Cargo = Cargo.Auxiliar, DataNascimento = DateTime.Parse("1972-03-15"), TimeId = times["Ceará"] },
                 new ComissaoTecnica { Nome = "Bruno Quintella", Cargo = Cargo.PreparadorFisico, DataNascimento = DateTime.Parse("1975-07-08"), TimeId = times["Ceará"] },
                 new ComissaoTecnica { Nome = "Rafael Santos", Cargo = Cargo.TreinadorGoleiro, DataNascimento = DateTime.Parse("1978-12-10"), TimeId = times["Ceará"] },
                 new ComissaoTecnica { Nome = "Carla Gomes", Cargo = Cargo.Fisiologista, DataNascimento = DateTime.Parse("1983-05-21"), TimeId = times["Ceará"] },
-                new ComissaoTecnica { Nome = "Paulo Henrique", Cargo = Cargo.Fisioterapeuta, DataNascimento = DateTime.Parse("1980-09-01"), TimeId = times["Ceará"] },
+                new ComissaoTecnica { Nome = "Paulo Henrique Barros", Cargo = Cargo.Fisioterapeuta, DataNascimento = DateTime.Parse("1980-09-01"), TimeId = times["Ceará"] },
 
                 // Vasco
                 new ComissaoTecnica { Nome = "Jorge Jesus", Cargo = Cargo.Treinador, DataNascimento = DateTime.Parse("1954-07-24"), TimeId = times["Vasco"] },
@@ -916,8 +916,8 @@
                 new ComissaoTecnica { Nome = "Ricardo Santos", Cargo = Cargo.Fisioterapeuta, DataNascimento = DateTime.Parse("1979-04-20"), TimeId = times["Vasco"] },
 
                 // América-MG
-                new ComissaoTecnica { Nome = "Paulo Henrique", Cargo = Cargo.Treinador, DataNascimento = DateTime.Parse("1970-05-10"), TimeId = times["América-MG"] },
-                new ComissaoTecnica { Nome = "Marcelo Costa", Cargo = Cargo.Auxiliar, DataNascimento = DateTime.Parse("1975-08-12"), TimeId = times["América-MG"] },
+                new ComissaoTecnica { Nome = "Paulo Henrique Costa", Cargo = Cargo.Treinador, DataNascimento = DateTime.Parse("1970-05-10"), TimeId = times["América-MG"] },
+                new ComissaoTecnica { Nome = "Marcelo Girafales", Cargo = Cargo.Auxiliar, DataNascimento = DateTime.Parse("1975-08-12"), TimeId = times["América-MG"] },
                 new ComissaoTecnica { Nome = "Eduardo Santos", Cargo = Cargo.PreparadorFisico, DataNascimento = DateTime.Parse("1980-03-20"), TimeId = times["América-MG"] },
                 new ComissaoTecnica { Nome = "Jefferson Ribeiro", Cargo = Cargo.TreinadorGoleiro, DataNascimento = DateTime.Parse("1982-11-30"), TimeId = times["América-MG"] },
                 new ComissaoTecnica { Nome = "Aline Ferreira", Cargo = Cargo.Fisiologista, DataNascimento = DateTime.Parse("1985-07-15"), TimeId = times["América-MG"] },

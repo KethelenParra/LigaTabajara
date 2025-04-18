@@ -1,21 +1,74 @@
-﻿@model IEnumerable<LigaTabajara.Models.ComissaoTecnica>
+﻿@model LigaTabajara.ViewModels.ComissaoTecnicaIndexViewModel
 
 @{
     ViewBag.Title = "Comissão Técnica";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+    .table-comissoes thead {
+        background-color: #006400;
+        color: #fff;
+    }
+
+    .card-comissaos {
+        border-radius: .5rem;
+        overflow: hidden;
+    }
+
+    .filter-bar {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-radius: .5rem;
+        box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+    }
+
+    .filter-bar .form-label {
+        font-weight: 600;
+        font-size: .9rem;
+        margin-bottom: .25rem;
+    }
+
+    .filter-bar .form-control,
+    .filter-bar .form-select {
+        min-width: 200px;
+    }
+</style>
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="mb-0">Comissão Técnica</h2>
-    <div>
-        @Html.ActionLink("Novo Membro", "Create", "ComissaoTecnicas", null, new { @class = "btn btn-success me-2" })
-    </div>
+    @Html.ActionLink("Novo Membro", "Create", "ComissaoTecnicas", null,
+        new { @class = "btn btn-success" })
 </div>
 
-<div class="card shadow-sm">
+@* === Formulário de Filtros === *@
+<div class="filter-bar d-flex flex-wrap align-items-end mb-5">
+    @using (Html.BeginForm("Index", "ComissaoTecnicas", FormMethod.Get, new { @class = "d-flex flex-wrap align-items-end w-100" }))
+    {
+        <div class="me-4 mb-3 flex-fill" style="min-width:200px; max-width:300px;">
+            @Html.LabelFor(m => m.SearchName, "Nome", new { @class = "form-label" })
+            @Html.TextBoxFor(m => m.SearchName,
+                new { @class = "form-control", placeholder = "Digite parte do nome…" })
+        </div>
+        <div class="me-4 mb-3 flex-fill" style="min-width:200px; max-width:250px;">
+            @Html.LabelFor(m => m.SelectedCargo, "Cargo", new { @class = "form-label" })
+            @Html.DropDownListFor(m => m.SelectedCargo,
+                Model.Cargos,
+                "Todos",
+                new { @class = "form-select" })
+        </div>
+        <div class="d-flex mb-3">
+            <button type="submit" class="btn btn-primary me-2">Filtrar</button>
+            <a href="@Url.Action("Index","ComissaoTecnicas")" class="btn btn-outline-secondary">Limpar</a>
+        </div>
+    }
+</div>
+
+@* === Tabela de Resultados === *@
+<div class="card card-comissaos shadow-sm">
     <div class="card-body p-0">
-        <table class="table table-striped table-hover mb-0">
-            <thead class="thead-light">
+        <table class="table table-striped table-hover mb-0 table-comissoes">
+            <thead>
                 <tr>
                     <th style="width:25%;">Time</th>
                     <th style="width:35%;">Nome</th>
@@ -25,21 +78,35 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
+                @if (!Model.Membros.Any())
                 {
                     <tr>
-                        <td>@item.Time.Nome</td>
-                        <td>@item.Nome</td>
-                        <td>@item.Cargo</td>
-                        <td>@item.DataNascimento.ToString("dd/MM/yyyy")</td>
-                        <td>
-                            <div class="btn-group btn-group-sm" role="group">
-                                @Html.ActionLink("Editar", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-secondary" })
-                                @Html.ActionLink("Detalhes", "Details", new { id = item.Id }, new { @class = "btn btn-outline-info" })
-                                @Html.ActionLink("Excluir", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger" })
-                            </div>
+                        <td colspan="5" class="text-center py-4">
+                            Nenhum membro encontrado.
                         </td>
                     </tr>
+                }
+                else
+                {
+                    foreach (var item in Model.Membros)
+                    {
+                        <tr>
+                            <td>@item.Time.Nome</td>
+                            <td>@item.Nome</td>
+                            <td>@item.Cargo</td>
+                            <td>@item.DataNascimento.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    @Html.ActionLink("Editar", "Edit", new { id = item.Id },
+                                        new { @class = "btn btn-outline-secondary" })
+                                    @Html.ActionLink("Detalhes", "Details", new { id = item.Id },
+                                        new { @class = "btn btn-outline-info" })
+                                    @Html.ActionLink("Excluir", "Delete", new { id = item.Id },
+                                        new { @class = "btn btn-outline-danger" })
+                                </div>
+                            </td>
+                        </tr>
+                    }
                 }
             </tbody>
         </table>

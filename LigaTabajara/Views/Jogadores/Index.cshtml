@@ -1,21 +1,79 @@
-﻿@model IEnumerable<LigaTabajara.Models.Jogador>
-
+﻿@model LigaTabajara.ViewModels.JogadorIndexViewModel
 @{
     ViewBag.Title = "Jogadores";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+    .filter-card {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-radius: .5rem;
+        box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+    }
+
+        .filter-card .form-label {
+            font-weight: 600;
+            font-size: .9rem;
+            margin-bottom: .25rem;
+        }
+
+        .filter-card .form-control,
+        .filter-card .form-select {
+            min-width: 220px;
+        }
+
+    .table-jogador thead {
+        background-color: #006400;
+        color: #fff;
+    }
+
+    .card-jogador {
+        border-radius: .5rem;
+        overflow: hidden;
+    }
+</style>
+
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="mb-0">Jogadores</h2>
-    <div>
-        @Html.ActionLink("Novo Jogador", "Create", "Jogadores", null, new { @class = "btn btn-success me-2" })
-    </div>
+    @Html.ActionLink("Novo Jogador", "Create", "Jogadores", null, new { @class = "btn btn-success" })
 </div>
 
-<div class="card shadow-sm">
+<!-- filtro em “cartão” -->
+<div class="filter-card d-flex flex-wrap align-items-end mb-5">
+    @using (Html.BeginForm("Index", "Jogadores", FormMethod.Get, new { @class = "d-flex flex-wrap align-items-end w-100" }))
+    {
+        <div class="me-4 mb-3">
+            @Html.LabelFor(m => m.SearchName, "Nome", new { @class = "form-label" })
+            @Html.TextBoxFor(m => m.SearchName,
+                new { @class = "form-control", placeholder = "Digite parte do nome…" })
+        </div>
+        <div class="me-4 mb-3">
+            @Html.LabelFor(m => m.SelectedPosicao, "Posição", new { @class = "form-label" })
+            @Html.DropDownListFor(m => m.SelectedPosicao,
+                new SelectList(Model.Posicoes, "Value", "Text", Model.SelectedPosicao),
+                "Todas",
+                new { @class = "form-select" })
+        </div>
+        <div class="me-4 mb-3">
+            @Html.LabelFor(m => m.SelectedPe, "Pé Preferido", new { @class = "form-label" })
+            @Html.DropDownListFor(m => m.SelectedPe,
+                new SelectList(Model.Pes, "Value", "Text", Model.SelectedPe),
+                "Todos",
+                new { @class = "form-select" })
+        </div>
+        <div class="d-flex mb-3">
+            <button type="submit" class="btn btn-primary me-2">Filtrar</button>
+            <a href="@Url.Action("Index","Jogadores")" class="btn btn-outline-secondary">Limpar</a>
+        </div>
+    }
+</div>
+
+<div class="card card-jogador shadow-sm">
     <div class="card-body p-0">
-        <table class="table table-striped table-hover mb-0">
-            <thead class="thead-light">
+        <table class="table table-striped table-hover mb-0 table-jogador">
+            <thead>
                 <tr>
                     <th style="width:20%;">Time</th>
                     <th style="width:15%;">Nome</th>
@@ -30,7 +88,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
+                @foreach (var item in Model.Jogadores)
                 {
                     <tr>
                         <td>@item.Time.Nome</td>
@@ -39,20 +97,8 @@
                         <td>@item.Nacionalidade</td>
                         <td>@item.Posicao</td>
                         <td>@item.NumCamisa</td>
-                        <td>
-                            @(
-                                // força duas casas decimais, separador ponto, e adiciona " m"
-                                item.Altura
-                                    .ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)
-                               + " m"
-                             )
-                        </td>
-                        <td>
-                            @(
-                               // peso com unidade "kg"
-                               item.Peso + " kg"
-                            )
-                        </td>
+                        <td>@(item.Altura.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + " m")</td>
+                        <td>@(item.Peso + " kg")</td>
                         <td>@item.PePreferido</td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">

@@ -18,16 +18,20 @@ namespace LigaTabajara.Controllers
         private static readonly Random _rng = new Random();
 
         // GET: Partidas
-        public ActionResult Index(int? round)
+        public ActionResult Index(
+            int? round,
+            string searchJogo,
+            string estadio
+        )
         {
-            // 1) coleta todas as rodadas distintas
+            // 1) coleta todas as rodadas
             var allRounds = db.Partidas
                               .Select(p => p.Round)
                               .Distinct()
                               .OrderBy(r => r)
                               .ToList();
 
-            // 2) carrega partidas com include e ordenação
+            // 2) carrega partidas com TimeMandante e TimeVisitante
             var partidas = db.Partidas
                               .Include(p => p.TimeMandante)
                               .Include(p => p.TimeVisitante)
@@ -35,22 +39,73 @@ namespace LigaTabajara.Controllers
                               .ThenBy(p => p.DataPartida)
                               .ToList();
 
-            // 3) aplica filtro de rodada se houver
+            // 3) filtra por rodada
             var schedule = round.HasValue
                 ? partidas.Where(p => p.Round == round.Value).ToList()
                 : partidas;
 
-            // 4) monta o ViewModel
-            var model = new PartidaIndexView
+            // 4) filtra por “jogo” (mandante OU visitante)
+            if (!String.IsNullOrWhiteSpace(searchJogo))
             {
-                Schedule = schedule,
+                schedule = schedule
+                    .Where(p =>
+                        p.TimeMandante.Nome
+                         .IndexOf(searchJogo, StringComparison.OrdinalIgnoreCase) >= 0
+                     || p.TimeVisitante.Nome
+                         .IndexOf(searchJogo, StringComparison.OrdinalIgnoreCase) >= 0
+                    )
+                    .ToList();
+            }
+
+            // 5) filtra por estádio (APENAS do mandante!)
+            if (!String.IsNullOrWhiteSpace(estadio))
+            {
+                schedule = schedule
+                    .Where(p =>
+                        p.TimeMandante.Estadio.Equals(estadio, StringComparison.OrdinalIgnoreCase)
+                    )
+                    .ToList();
+            }
+
+            // 6) monta lista de opções de estádio para o dropdown
+            var estadioOptions = db.Times
+                .Select(t => t.Estadio)
+                .Distinct()
+                .OrderBy(e => e)
+                .Select(e => new SelectListItem
+                {
+                    Text = e,
+                    Value = e,
+                    Selected = (e.Equals(estadio, StringComparison.OrdinalIgnoreCase))
+                });
+
+            // 7) constroi o ViewModel
+            var vm = new PartidaIndexView
+            {
                 Rounds = allRounds,
-                Round = round
+                Round = round,
+                Schedule = schedule,
+                SearchJogo = searchJogo,
+                SelectedEstadio = estadio,
+                EstadioOptions = estadioOptions
             };
 
-            return View(model);
+            return View(vm);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult LimparCalendario()
+        {
+            // Apaga todas as estatísticas (FK)
+            db.EstatisticasJogos.RemoveRange(db.EstatisticasJogos);
+            // Apaga todas as partidas
+            db.Partidas.RemoveRange(db.Partidas);
+            db.SaveChanges();
+
+            TempData["Success"] = "Calendário inteiramente removido!";
+            return RedirectToAction("Index");
+        }
 
         // GET: Partidas/Details/5
         public ActionResult Details(int? id)
@@ -84,6 +139,16 @@ namespace LigaTabajara.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,DataPartida,TimeMandanteId,TimeVisitanteId,GolsMandante,GolsVisitante")] Partida partida)
         {
+            // nova validação de "apto"
+            if (!IsTeamApto(partida.TimeMandanteId) || !IsTeamApto(partida.TimeVisitanteId))
+            {
+                ModelState.AddModelError("",
+                    "Não é possível cadastrar esta partida: um ou ambos os times não estão aptos para jogar.");
+                ViewBag.TimeMandanteId = new SelectList(db.Times, "Id", "Nome", partida.TimeMandanteId);
+                ViewBag.TimeVisitanteId = new SelectList(db.Times, "Id", "Nome", partida.TimeVisitanteId);
+                return View(partida);
+            }
+
             if (ModelState.IsValid)
             {
                 // Validação: os times não podem ser os mesmos
@@ -187,6 +252,17 @@ namespace LigaTabajara.Controllers
             if (times.Count != 20)
             {
                 TempData["Error"] = "É necessário ter exatamente 20 times cadastrados para gerar o calendário.";
+                return RedirectToAction("Index");
+            }
+
+            var naoAptos = times.Where(t => !IsTeamApto(t.Id))
+                       .Select(t => t.Nome)
+                       .ToList();
+            if (naoAptos.Any())
+            {
+                TempData["Error"] =
+                  "Não é possível gerar o campeonato: os seguintes times não estão aptos:\n"
+                  + string.Join(", ", naoAptos);
                 return RedirectToAction("Index");
             }
 
@@ -300,6 +376,24 @@ namespace LigaTabajara.Controllers
             if (partidaOriginal == null)
                 return HttpNotFound();
 
+            // --- NOVA VALIDAÇÃO: não deixar editar rodada N se existir partida sem resultado na rodada N‑1 ---
+            var rodadaAtual = partidaOriginal.Round;
+            if (rodadaAtual > 1)
+            {
+                var faltaRegistrio = db.Partidas.Any(p =>
+                    p.Round == rodadaAtual - 1
+                    && (!p.GolsMandante.HasValue || !p.GolsVisitante.HasValue)
+                );
+                if (faltaRegistrio)
+                {
+                    ModelState.AddModelError(
+                        "",
+                        $"Você deve registrar todos os resultados da rodada {rodadaAtual - 1} antes de editar uma partida da rodada {rodadaAtual}."
+                    );
+                    return View(partidaDoForm);
+                }
+            }
+
             // 3) Limpe estatísticas antigas
             var antigas = db.EstatisticasJogos.Where(e => e.PartidaId == id);
             db.EstatisticasJogos.RemoveRange(antigas);
@@ -321,6 +415,18 @@ namespace LigaTabajara.Controllers
             return RedirectToAction("Index");
         }
 
+        private bool IsTeamApto(int timeId)
+        {
+            // pelo menos 30 jogadores
+            bool hasMinPlayers = db.Jogadores.Count(j => j.TimeId == timeId) >= 30;
+            // comissão técnica – exatamente 6 cargos, cada um único
+            var cargos = db.ComissoesTecnicas
+                           .Where(c => c.TimeId == timeId)
+                           .Select(c => c.Cargo)
+                           .ToList();
+            bool hasMinComissao = cargos.Count == 6 && cargos.Distinct().Count() == 6;
+            return hasMinPlayers && hasMinComissao;
+        }
 
         // GET: Partidas/Delete/5
         public ActionResult Delete(int? id)
