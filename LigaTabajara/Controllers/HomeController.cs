@@ -142,6 +142,8 @@ namespace LigaTabajara.Controllers
             var mostDraws = teamStats.OrderByDescending(t => t.Draws).FirstOrDefault();
             var mostLoss = teamStats.OrderByDescending(t => t.Losses).FirstOrDefault();
 
+            bool leagueIsApto = teamStats.All(ts => ts.IsApto);
+
             // 9) ViewModel final
             var model = new HomeIndexView
             {
@@ -152,6 +154,7 @@ namespace LigaTabajara.Controllers
                 CampeonatoConcluido = encerrado,
                 Campeao = campeao,
                 TopScorer = topScorer,
+                LeagueIsApto = leagueIsApto,
 
                 // Novas propriedades — não esqueça de incluí‑las em HomeIndexViewModel!
                 TotalRounds = allRounds.Count,

@@ -26,6 +26,8 @@ namespace LigaTabajara.ViewModels
         public TeamStatView MostWins { get; set; }
         public TeamStatView MostDraws { get; set; }
         public TeamStatView MostLosses { get; set; }
+
+        public bool LeagueIsApto { get; set; }
     }
 
     public class PlayerGoalView

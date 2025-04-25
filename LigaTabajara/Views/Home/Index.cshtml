@@ -34,45 +34,45 @@
         border-spacing: 0;
     }
 
-    .table-classificacao thead {
-        background-color: #006400;
-        color: #fff;
-    }
+        .table-classificacao thead {
+            background-color: #006400;
+            color: #fff;
+        }
 
-    .table-classificacao tbody tr:nth-child(odd) {
-        background-color: #f8f9fa;
-    }
+        .table-classificacao tbody tr:nth-child(odd) {
+            background-color: #f8f9fa;
+        }
 
-    .table-classificacao tbody tr:hover {
-        background-color: #e2e6ea;
-    }
+        .table-classificacao tbody tr:hover {
+            background-color: #e2e6ea;
+        }
 
-    .table-classificacao a {
-        text-decoration: none;
-        color: #004085;
-        font-weight: 500;
-    }
+        .table-classificacao a {
+            text-decoration: none;
+            color: #004085;
+            font-weight: 500;
+        }
 
-    .table-classificacao a:hover {
-        text-decoration: underline;
-    }
+            .table-classificacao a:hover {
+                text-decoration: underline;
+            }
 
-     
-    .table-classificacao tbody tr.tr-lb > td:first-child {
-        border-left: .2rem solid #0d6efd;
-    }
 
-    .table-classificacao tbody tr.tr-q > td:first-child {
-        border-left: .2rem solid #fd7e14;
-    }
+        .table-classificacao tbody tr.tr-lb > td:first-child {
+            border-left: .2rem solid #0d6efd;
+        }
 
-    .table-classificacao tbody tr.tr-s > td:first-child {
-        border-left: .2rem solid #198754;
-    }
+        .table-classificacao tbody tr.tr-q > td:first-child {
+            border-left: .2rem solid #fd7e14;
+        }
 
-    .table-classificacao tbody tr.tr-r > td:first-child {
-        border-left: .2rem solid #dc3545;
-    }
+        .table-classificacao tbody tr.tr-s > td:first-child {
+            border-left: .2rem solid #198754;
+        }
+
+        .table-classificacao tbody tr.tr-r > td:first-child {
+            border-left: .2rem solid #dc3545;
+        }
 
     .card-agenda {
         border: none;
@@ -80,13 +80,13 @@
         box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
     }
 
-    .card-agenda .card-header {
-        background-color: #006400;
-        color: #fff;
-        font-weight: 600;
-        font-size: 1.25rem;
-        padding: .75rem 1.25rem;
-    }
+        .card-agenda .card-header {
+            background-color: #006400;
+            color: #fff;
+            font-weight: 600;
+            font-size: 1.25rem;
+            padding: .75rem 1.25rem;
+        }
 
     .agenda-nav .btn-nav {
         display: inline-block;
@@ -101,14 +101,14 @@
         text-decoration: none;
     }
 
-    .agenda-nav .btn-nav:hover {
-        background-color: rgba(255,255,255,0.15);
-    }
+        .agenda-nav .btn-nav:hover {
+            background-color: rgba(255,255,255,0.15);
+        }
 
-    .agenda-nav .btn-nav.disabled {
-        opacity: .5;
-        pointer-events: none;
-    }
+        .agenda-nav .btn-nav.disabled {
+            opacity: .5;
+            pointer-events: none;
+        }
 
     .table-agenda thead {
         background-color: #228b22;
@@ -129,14 +129,14 @@
         color: #fff;
     }
 
-    .btn-view:hover {
-        background-color: #196619;
-        color: #fff;
-    }
+        .btn-view:hover {
+            background-color: #196619;
+            color: #fff;
+        }
 
     .legend-grid {
         display: flex;
-        justify-content: space-between; 
+        justify-content: space-between;
         align-items: flex-start;
         margin-top: 2rem;
     }
@@ -144,21 +144,21 @@
     .legend-col {
         display: flex;
         flex-direction: column;
-        flex: 1; 
-        max-width: 50%; 
+        flex: 1;
+        max-width: 50%;
     }
 
-    .legend-col h5 {
-        font-size: 1rem;
-        margin-bottom: .5rem;
-    }
+        .legend-col h5 {
+            font-size: 1rem;
+            margin-bottom: .5rem;
+        }
 
-    .legend-col .legend-item {
-        display: flex;
-        align-items: center;
-        margin-bottom: .5rem;
-        font-size: .9rem;
-    }
+        .legend-col .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: .5rem;
+            font-size: .9rem;
+        }
 
     .legend-color {
         width: 4px;
@@ -174,12 +174,17 @@
     }
 
     .card-resumo {
-      background-color: #228b22;
+        background-color: #228b22;
     }
 </style>
 
 <h2 class="mb-4">Liga Tabajara de Futebol</h2>
-
+@if (Model.LeagueIsApto)
+{
+    <div class="alert alert-success text-center">
+        🏅 <strong>Liga apta para iniciar!</strong> 
+    </div>
+}
 
 @if (Model.CampeonatoConcluido)
 {
@@ -189,7 +194,7 @@
         <p>Pontuação final: <strong>@Model.Campeao.Points</strong> pontos</p>
         <img src="~/images/trofeu.png" alt="Troféu" style="max-width:200px; margin-top:1rem;" />
     </div>
-    
+
     // filtra apenas partidas com resultado
     var concluídas = Model.Schedule
         .Where(p => p.GolsMandante.HasValue && p.GolsVisitante.HasValue)
@@ -212,7 +217,7 @@
     var maisDerrotas = Model.TeamStats
         .OrderByDescending(t => t.Losses)
         .FirstOrDefault();
-   
+
 
     <div class="card mb-5">
         <div class="card-header text-white card-resumo">
@@ -233,19 +238,19 @@
             </li>
             <li class="list-group-item">
                 <strong>Artilheiro:</strong>
-                   @Model.TopScorer.JogadorNome (@Model.TopScorer.TotalGols) gols
+                @Model.TopScorer.JogadorNome (@Model.TopScorer.TotalGols) gols
             </li>
             <li class="list-group-item">
                 <strong>Time com mais vitórias:</strong>
-                   @maisVitorias.Time.Nome (@maisVitorias.Wins) vitórias
+                @maisVitorias.Time.Nome (@maisVitorias.Wins) vitórias
             </li>
             <li class="list-group-item">
                 <strong>Time com mais empates:</strong>
-                   @maisEmpates.Time.Nome (@maisEmpates.Draws) empates
+                @maisEmpates.Time.Nome (@maisEmpates.Draws) empates
             </li>
             <li class="list-group-item">
-                <strong>Time com mais derrotas:</strong>           
-                   @maisDerrotas.Time.Nome (@maisDerrotas.Losses) derrotas
+                <strong>Time com mais derrotas:</strong>
+                @maisDerrotas.Time.Nome (@maisDerrotas.Losses) derrotas
             </li>
         </ul>
     </div>

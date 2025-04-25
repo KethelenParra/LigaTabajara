@@ -239,6 +239,14 @@ namespace LigaTabajara.Controllers
         // NOVA AÇÃO: GerarPartidas – calendário com turno e returno
         public ActionResult GerarPartidas()
         {
+            if (!IsLeagueApto())
+            {
+                TempData["Error"] =
+                    "Não é possível gerar o calendário: a liga ainda não está apta. "
+                  + "Garanta que todos os times tenham ao menos 30 jogadores e 6 cargos distintos na comissão.";
+                return RedirectToAction("Index");
+            }
+
             // 0) Limpa as estatísticas (evita FK violation)
             db.EstatisticasJogos.RemoveRange(db.EstatisticasJogos);
             db.SaveChanges();
@@ -361,6 +369,13 @@ namespace LigaTabajara.Controllers
             [Bind(Include="Id,DataPartida,TimeMandanteId,TimeVisitanteId,GolsMandante,GolsVisitante")]
             Partida partidaDoForm)
         {
+            if (!IsLeagueApto())
+            {
+                ModelState.AddModelError("",
+                  "Não é possível editar partidas: a liga ainda não está apta (alguns times não cumprem os requisitos).");
+                return View(partidaDoForm);
+            }
+
             // 1) Reponha sempre os SelectLists no ViewBag
             ViewBag.TimeMandanteId = new SelectList(db.Times, "Id", "Nome", partidaDoForm.TimeMandanteId);
             ViewBag.TimeVisitanteId = new SelectList(db.Times, "Id", "Nome", partidaDoForm.TimeVisitanteId);
@@ -413,6 +428,16 @@ namespace LigaTabajara.Controllers
             RegistrarEstatisticasAutomaticas(partidaOriginal);
 
             return RedirectToAction("Index");
+        }
+        private bool IsLeagueApto()
+        {
+            // busca todos os times do banco primeiro
+            var allTimes = db.Times
+                             .Select(t => t.Id)
+                             .ToList(); // materializa no cliente
+
+            // agora roda o All em memória, chamando seu IsTeamApto normalmente
+            return allTimes.All(id => IsTeamApto(id));
         }
 
         private bool IsTeamApto(int timeId)
